@@ -80,23 +80,34 @@ export default function Home() {
   };
 
   const handleDeepScan = async () => {
-    setIsScanningAll(true); setRekomendasiTerbaik(null);
+    setIsScanningAll(true); setRekomendasiTerbaik(null); setError("");
     try {
       const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Pilih dari daftar (Opsional)");
-      const promises = daftar.map(async (p) => {
-        const res = await fetch("http://localhost:8000/predict-by-location", {
+      const hasilSemua = [];
+
+      // MENGGUNAKAN LOOPING SATU PER SATU AGAR TIDAK DIBLOKIR SERVER SATELIT
+      for (const p of daftar) {
+        const res = await fetch("https://GANTI-DENGAN-LINK-API-ASLI-ANDA.hf.space/predict-by-location", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ lat: p.lat, lon: p.lng }),
         });
+        
+        if (!res.ok) {
+          throw new Error(`Satelit memblokir koneksi saat memindai ${p.nama}`);
+        }
+        
         const data = await res.json();
-        return { ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca };
-      });
-      const hasilSemua = await Promise.all(promises);
+        hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
+      }
+
       let kandidat = hasilSemua.filter(p => p.statusAI === "Aman");
       if (kandidat.length === 0) kandidat = hasilSemua.filter(p => p.statusAI === "Waspada");
       kandidat.sort((a, b) => a.cuaca.angin_ms - b.cuaca.angin_ms);
       setRekomendasiTerbaik(kandidat);
-    } catch (err) { setError("Deep Scan terganggu."); }
+    } catch (err: any) { 
+      // Menampilkan pesan error yang lebih detail
+      setError("Deep Scan terganggu: " + err.message); 
+    }
     finally { setIsScanningAll(false); }
   };
 
