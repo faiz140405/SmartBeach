@@ -51,14 +51,17 @@ const PANTAI_LAMPUNG = [
 ];
 
 // ==========================================
-// KOMPONEN CHATBOT MENGAMBANG
+// KOMPONEN CHATBOT GOOGLE GEMINI AI
 // ==========================================
+// 🔴 GANTI TEKS DI BAWAH INI DENGAN API KEY GOOGLE STUDIO ANDA
+const GEMINI_API_KEY = "AIzaSyB75PKqLixBLcgEoCFqMqwIunbR3P0BRCA";
+
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "bot", text: "Halo! 🌊 Saya asisten AI SmartBeach. Ada yang ingin Anda tanyakan seputar keamanan ombak atau rekomendasi pantai hari ini?" }
+    { role: "bot", text: "Halo! 🌊 Saya asisten pintar SmartBeach. Ingin tanya-tanya soal pantai, cuaca, atau butuh rekomendasi liburan di Lampung hari ini?" }
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -66,21 +69,45 @@ const FloatingChatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping, isOpen]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    setMessages(prev => [...prev, { role: "user", text: input }]);
+    const userText = input;
+    setMessages(prev => [...prev, { role: "user", text: userText }]);
     setInput("");
     setIsTyping(true);
 
-    setTimeout(() => {
-      setIsTyping(false);
+    try {
+      // Prompt Kepribadian AI
+      const systemPrompt = `Kamu adalah 'SmartBeach AI', asisten cerdas untuk pariwisata pantai di Provinsi Lampung. 
+      Tugasmu menjawab pertanyaan tentang cuaca pantai, rekomendasi wisata laut, ombak, dan hal terkait liburan pesisir.
+      Jawablah dengan bahasa Indonesia yang ramah, sopan, sedikit gaul (tapi tetap profesional), dan usahakan jawabanmu ringkas (jangan terlalu panjang).
+      Pertanyaan user: ${userText}`;
+
+      // Memanggil Google Gemini 1.5 Flash
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ role: "user", parts: [{ text: systemPrompt }] }]
+        })
+      });
+
+      if (!res.ok) throw new Error("Gagal terhubung ke Google AI");
+
+      const data = await res.json();
+      const botReply = data.candidates[0].content.parts[0].text;
+
+      setMessages(prev => [...prev, { role: "bot", text: botReply }]);
+    } catch (error) {
       setMessages(prev => [...prev, { 
         role: "bot", 
-        text: "Menarik! Saat ini fitur obrolan AI tingkat lanjut sedang dalam tahap integrasi. Untuk sementara, Anda bisa menggunakan fitur 'Deep Scan' di halaman utama untuk memantau keamanan 20 pantai sekaligus secara real-time! 🚀" 
+        text: "Waduh, koneksi ke otak satelit saya sedang terganggu nih 📡. Coba tanyakan lagi dalam beberapa detik ya!" 
       }]);
-    }, 1500);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -89,12 +116,12 @@ const FloatingChatbot = () => {
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 md:p-5 flex items-center justify-between text-white shrink-0">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-full">
-              <Bot size={20} />
+              <Sparkles size={20} />
             </div>
             <div>
-              <h3 className="font-black text-sm leading-tight">SmartBeach AI</h3>
+              <h3 className="font-black text-sm leading-tight">Gemini SmartBeach</h3>
               <p className="text-[10px] text-blue-100 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Didukung oleh Google AI
               </p>
             </div>
           </div>
@@ -111,9 +138,11 @@ const FloatingChatbot = () => {
                   <Bot size={16} />
                 </div>
               )}
-              <div className={`p-3 md:p-4 rounded-2xl max-w-[80%] text-xs md:text-sm shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white text-slate-700 border border-slate-100 rounded-bl-sm'}`}>
-                {msg.text}
-              </div>
+              <div 
+                className={`p-3 md:p-4 rounded-2xl max-w-[80%] text-xs md:text-sm shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white text-slate-700 border border-slate-100 rounded-bl-sm'}`}
+                // Render Markdown simple text
+                dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
+              />
               {msg.role === 'user' && (
                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 text-white">
                   <User size={16} />
@@ -147,7 +176,7 @@ const FloatingChatbot = () => {
           />
           <button 
             type="submit" 
-            disabled={!input.trim()}
+            disabled={!input.trim() || isTyping}
             className="bg-blue-600 text-white p-3 md:p-4 rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors flex items-center justify-center"
           >
             <Send size={18} className="ml-1" />
@@ -231,11 +260,9 @@ export default function Home() {
         }
         
         // JEDA 500ms (Setengah Detik) SEBELUM MEMINDAI PANTAI BERIKUTNYA
-        // Ini adalah kunci agar kita tidak diblokir oleh satelit cuaca!
         await delay(500); 
       }
 
-      // Jika dari 20 pantai tidak ada satu pun yang berhasil masuk:
       if (hasilSemua.length === 0) {
         throw new Error("Semua koneksi ke satelit gagal. Pastikan link API Anda sudah benar.");
       }
@@ -266,7 +293,7 @@ export default function Home() {
   return (
     <div className="font-poppins min-h-screen bg-slate-50 text-slate-900 pb-12 selection:bg-blue-100 overflow-x-hidden relative">
       
-      {/* Memasukkan Komponen Chatbot */}
+      {/* Memasukkan Komponen Chatbot Gemini AI */}
       <FloatingChatbot />
 
       {/* Menggabungkan CSS External Khusus untuk Mobile Layout */}
