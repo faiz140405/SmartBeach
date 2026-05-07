@@ -79,38 +79,58 @@ export default function Home() {
     } finally { setLoading(false); }
   };
 
+  // Fungsi Jeda (Delay) buatan
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
   const handleDeepScan = async () => {
     setIsScanningAll(true); setRekomendasiTerbaik(null); setError("");
+    
     try {
       const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Pilih dari daftar (Opsional)");
       const hasilSemua = [];
 
-      // MENGGUNAKAN LOOPING SATU PER SATU AGAR TIDAK DIBLOKIR SERVER SATELIT
-      for (const p of daftar) {
-        const res = await fetch("https://GANTI-DENGAN-LINK-API-ASLI-ANDA.hf.space/predict-by-location", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lat: p.lat, lon: p.lng }),
-        });
+      // MENGGUNAKAN LOOPING SATU PER SATU DENGAN JEDA WAKTU
+      for (let i = 0; i < daftar.length; i++) {
+        const p = daftar[i];
         
-        if (!res.ok) {
-          throw new Error(`Satelit memblokir koneksi saat memindai ${p.nama}`);
+        try {
+          const res = await fetch("https://GANTI-DENGAN-LINK-API-ASLI-ANDA.hf.space/predict-by-location", {
+            method: "POST", 
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lat: p.lat, lon: p.lng }),
+          });
+          
+          if (res.ok) {
+            const data = await res.json();
+            hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
+          } else {
+            console.warn(`Satelit gagal membaca cuaca untuk ${p.nama}, pantai ini dilewati.`);
+          }
+        } catch (e) {
+          console.warn(`Gagal terhubung saat memindai ${p.nama}.`);
         }
         
-        const data = await res.json();
-        hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
+        // JEDA 500ms (Setengah Detik) SEBELUM MEMINDAI PANTAI BERIKUTNYA
+        // Ini adalah kunci agar kita tidak diblokir oleh satelit cuaca!
+        await delay(500); 
+      }
+
+      // Jika dari 20 pantai tidak ada satu pun yang berhasil masuk:
+      if (hasilSemua.length === 0) {
+        throw new Error("Semua koneksi ke satelit gagal. Pastikan link API Anda sudah benar.");
       }
 
       let kandidat = hasilSemua.filter(p => p.statusAI === "Aman");
       if (kandidat.length === 0) kandidat = hasilSemua.filter(p => p.statusAI === "Waspada");
       kandidat.sort((a, b) => a.cuaca.angin_ms - b.cuaca.angin_ms);
       setRekomendasiTerbaik(kandidat);
-    } catch (err: any) { 
-      // Menampilkan pesan error yang lebih detail
-      setError("Deep Scan terganggu: " + err.message); 
-    }
-    finally { setIsScanningAll(false); }
-  };
 
+    } catch (err: any) { 
+      setError("Deep Scan terganggu: " + err.message); 
+    } finally { 
+      setIsScanningAll(false); 
+    }
+  };
   const pilihDariRekomendasi = (nama: string, lat: number, lng: number) => {
     setSelectedPantai(nama); setPosition({ lat, lng }); setHasil(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
