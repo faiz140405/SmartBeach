@@ -108,7 +108,7 @@ const FloatingChatbot = () => {
           <div className="flex items-center gap-3">
             <BotMessageSquare size={22} />
             <div>
-              <h3 className="font-bold text-sm">SmartBeach AI</h3>
+              <h3 className="font-bold text-sm">Samba AI</h3>
             </div>
           </div>
           <button onClick={() => setIsOpen(false)} className="hover:bg-black/20 p-2 rounded-full transition-all">
@@ -256,12 +256,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 p-1.5 rounded-lg text-white"><Waves size={20} /></div>
-            <span className="font-black text-lg tracking-tight">SmartBeach<span className="text-blue-600">.ai</span></span>
+            <span className="font-black text-lg tracking-tight">SmartBeach</span>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
-              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Satelit Aktif</span>
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Server On</span>
             </div>
             <button onClick={toggleDarkMode} className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
