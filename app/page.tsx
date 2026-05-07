@@ -193,7 +193,7 @@ export default function Home() {
           <div className="bg-white/95 backdrop-blur-xl p-5 md:p-7 rounded-[2rem] shadow-2xl border border-white">
             <div className="flex items-center justify-between mb-4">
                <h2 className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Navigation size={14}/> Cari Pantai...
+                <Navigation size={14}/> Cari Pantai Disini
                </h2>
                <div className="flex gap-2 text-[9px] md:text-[10px] font-mono font-bold text-blue-600 bg-blue-50 px-2 py-1.5 rounded-lg border border-blue-100">
                 {position.lat.toFixed(3)}, {position.lng.toFixed(3)}
@@ -242,7 +242,6 @@ export default function Home() {
           <div id="result-area" className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white overflow-hidden scroll-mt-28">
             <div className={`p-8 md:p-12 text-center text-white bg-gradient-to-br ${getSaran(hasil.rekomendasi).color} relative`}>
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-              <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] mb-3 opacity-80">AI Safety Report</p>
               <h2 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter drop-shadow-2xl">{hasil.rekomendasi}</h2>
             </div>
             
