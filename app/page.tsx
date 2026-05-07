@@ -94,7 +94,7 @@ export default function Home() {
         const p = daftar[i];
         
         try {
-          const res = await fetch("https://GANTI-DENGAN-LINK-API-ASLI-ANDA.hf.space/predict-by-location", {
+          const res = await fetch("https://faiz140405-backend-smartbeach.hf.space/predict-by-location", {
             method: "POST", 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ lat: p.lat, lon: p.lng }),
