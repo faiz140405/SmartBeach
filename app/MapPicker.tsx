@@ -1,56 +1,45 @@
 "use client";
 
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents, Tooltip } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
-// Memperbaiki icon marker Leaflet di Next.js
-const customIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+const icon = L.icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   iconSize: [25, 41],
-  iconAnchor: [12, 41]
+  iconAnchor: [12, 41],
 });
 
+function UpdateView({ position }: { position: { lat: number; lng: number } }) {
+  const map = useMap();
+  useEffect(() => { map.setView([position.lat, position.lng], 13); }, [position, map]);
+  return null;
+}
+
+function MapEvents({ setPosition }: { setPosition: any }) {
+  useMapEvents({
+    click(e) { setPosition({ lat: e.latlng.lat, lng: e.latlng.lng }); },
+  });
+  return null;
+}
+
 export default function MapPicker({ position, setPosition, daftarPantai }: any) {
-  function LocationMarker() {
-    const map = useMapEvents({
-      click(e) {
-        setPosition(e.latlng);
-        map.flyTo(e.latlng, map.getZoom());
-      },
-    });
-
-    useEffect(() => {
-      map.flyTo(position, map.getZoom());
-    }, [position, map]);
-
-    return position === null ? null : <Marker position={position} icon={customIcon}></Marker>;
-  }
-
   return (
-    <MapContainer 
-      center={position} 
-      zoom={9} 
-      scrollWheelZoom={true} 
-      style={{ height: "100%", width: "100%", zIndex: 0 }}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      
-      {daftarPantai && daftarPantai.map((pantai: any, idx: number) => (
-        <Marker key={idx} position={{ lat: pantai.lat, lng: pantai.lng }} icon={customIcon}>
-          <Tooltip direction="top" offset={[0, -40]} opacity={0.9} permanent={false}>
-            <span className="font-semibold text-slate-700 tracking-wide">{pantai.nama}</span>
-          </Tooltip>
+    <MapContainer center={[position.lat, position.lng]} zoom={13} className="h-full w-full">
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <UpdateView position={position} />
+      <MapEvents setPosition={setPosition} />
+      <Marker position={[position.lat, position.lng]} icon={icon}>
+        <Popup>Lokasi yang dipilih</Popup>
+      </Marker>
+      {daftarPantai?.map((p: any, i: number) => (
+        <Marker key={i} position={[p.lat, p.lng]} icon={icon}>
+          <Popup>{p.nama}</Popup>
         </Marker>
       ))}
-
-      <LocationMarker />
     </MapContainer>
   );
 }
