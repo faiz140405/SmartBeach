@@ -61,7 +61,7 @@ export default function Home() {
   const handlePredict = async () => {
     setLoading(true); setError(""); setHasil(null);
     try {
-      const res = await fetch("http://localhost:8000/predict-by-location", {
+      const res = await fetch("https://backendsmartbeach.railway.internal/predict-by-location", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lat: position.lat, lon: position.lng }),
       });
