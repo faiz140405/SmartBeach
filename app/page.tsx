@@ -54,7 +54,7 @@ const PANTAI_LAMPUNG = [
 // KOMPONEN CHATBOT GOOGLE GEMINI AI
 // ==========================================
 // 🔴 GANTI TEKS DI BAWAH INI DENGAN API KEY GOOGLE STUDIO ANDA
-const GEMINI_API_KEY = "AIzaSyB75PKqLixBLcgEoCFqMqwIunbR3P0BRCA";
+const GEMINI_API_KEY = "AIzaSyA6S91KCuWDnrGJHykVDobLTS8CfvtWejs";
 
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
