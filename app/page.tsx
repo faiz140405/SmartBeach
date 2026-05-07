@@ -26,7 +26,7 @@ const MapPicker = dynamic(() => import("./MapPicker"), {
 });
 
 const PANTAI_LAMPUNG = [
-  { nama: "Pilih dari daftar (Opsional)", lat: -5.4254, lng: 105.2590, info: null },
+  { nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null },
   { nama: "Pantai Mutun (Pesawaran)", lat: -5.5507, lng: 105.2428, info: { deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, ramah anak.", htm: "Rp 25.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Mudah, semua kendaraan.", fasilitas: ["Pondokan", "Banana Boat", "Bilas"], waktuTerbaik: "15:00 - 17:00 WIB" } },
   { nama: "Pantai Sari Ringgung (Pesawaran)", lat: -5.5715, lng: 105.2624, info: { deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.", htm: "Rp 20.000 / Orang", jam: "06:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Perahu", "Masjid Apung", "Kafe"], waktuTerbaik: "08:00 - 11:00 WIB" } },
   { nama: "Pantai Klara (Pesawaran)", lat: -5.5968, lng: 105.2215, info: { deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.", htm: "Rp 15.000 / Motor", jam: "07:00 - 18:00 WIB", akses: "Pinggir jalan raya.", fasilitas: ["Gazebo", "Kano", "Kamar Mandi"], waktuTerbaik: "10:00 - 14:00 WIB" } },
@@ -86,7 +86,7 @@ export default function Home() {
     setIsScanningAll(true); setRekomendasiTerbaik(null); setError("");
     
     try {
-      const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Pilih dari daftar (Opsional)");
+      const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Pilih Daftar Pantai...");
       const hasilSemua = [];
 
       // MENGGUNAKAN LOOPING SATU PER SATU DENGAN JEDA WAKTU
@@ -162,7 +162,7 @@ export default function Home() {
               <Waves size={18} />
             </div>
             <span className="font-black text-lg md:text-xl tracking-tighter">
-              SmartBeach<span className="text-blue-600">.ai</span>
+              SmartBeach
             </span>
           </div>
           <div className="flex items-center gap-2 md:gap-6 text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-widest">
@@ -193,7 +193,7 @@ export default function Home() {
           <div className="bg-white/95 backdrop-blur-xl p-5 md:p-7 rounded-[2rem] shadow-2xl border border-white">
             <div className="flex items-center justify-between mb-4">
                <h2 className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Navigation size={14}/> Radar Navigasi
+                <Navigation size={14}/> Cari Pantai...
                </h2>
                <div className="flex gap-2 text-[9px] md:text-[10px] font-mono font-bold text-blue-600 bg-blue-50 px-2 py-1.5 rounded-lg border border-blue-100">
                 {position.lat.toFixed(3)}, {position.lng.toFixed(3)}
@@ -220,7 +220,7 @@ export default function Home() {
                 disabled={loading} 
                 className="w-full bg-blue-600 active:bg-blue-800 text-white p-4 rounded-2xl font-black text-sm md:text-base shadow-xl shadow-blue-600/20 hover:scale-[1.02] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {loading ? <><Loader2 className="animate-spin" size={18}/> Menghubungi Satelit...</> : <><Radar size={18}/> Pindai Lokasi Ini</>}
+                {loading ? <><Loader2 className="animate-spin" size={18}/> Memproses...</> : <><Radar size={18}/> Pindai Lokasi Ini</>}
               </button>
             </div>
           </div>
@@ -339,20 +339,20 @@ export default function Home() {
           <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center">
             <div className="text-center lg:text-left space-y-5 md:space-y-6">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[10px] md:text-xs font-bold text-blue-300">
-                <Sparkles size={14} /> AI Radar Provincial
+                <Sparkles size={14} /> AI Radar Provinsi
               </span>
               <h2 className="text-4xl md:text-6xl font-black leading-none bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent tracking-tighter">
-                Satelit <br/>Deep Scan
+                AI <br/>Smart Beach
               </h2>
               <p className="text-sm md:text-lg text-slate-400 font-medium max-w-sm mx-auto lg:mx-0">
-                Pindai cuaca dan keselamatan laut di 20 pantai pesisir Lampung secara serentak dalam hitungan detik.
+                Pindai cuaca dan keselamatan laut di 20 pantai pesisir Lampung secara serentak dalam satu klik.
               </p>
               <button 
                 onClick={handleDeepScan}
                 disabled={isScanningAll}
                 className="w-full sm:w-auto bg-white text-slate-950 px-8 py-4 rounded-2xl font-black text-sm md:text-lg hover:bg-blue-400 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 mt-4"
               >
-                {isScanningAll ? <><Loader2 className="animate-spin" size={20}/> Memindai Satelit...</> : <><Radar size={20}/> Mulai Deep Scan</>}
+                {isScanningAll ? <><Loader2 className="animate-spin" size={20}/> Memindai Satelit...</> : <><Radar size={20}/> Mulai Sekarang</>}
               </button>
             </div>
 
@@ -394,7 +394,7 @@ export default function Home() {
 
       {/* Footer Branding */}
       <footer className="text-center pt-16 pb-8 opacity-30">
-        <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em]">Lampung Intelligence Beach Management</p>
+        <p className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em]">Lampung Smart Beach</p>
       </footer>
     </div>
   );
