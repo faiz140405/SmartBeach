@@ -31,7 +31,7 @@ const MapPicker = dynamic(() => import("./MapPicker"), {
 
 const PANTAI_LAMPUNG = [
   { nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null },
-  { nama: "Pantai Mutun (Pesawaran)", lat: -5.5507, lng: 105.2428, info: { deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, ramah anak.", htm: "Rp 25.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Mudah, semua kendaraan.", fasilitas: ["Pondokan", "Banana Boat", "Bilas"], waktuTerbaik: "15:00 - 17:00 WIB" } },
+  { nama: "Pantai Mutun (Pesawaran)", lat: -5.5507, lng: 105.2428, info: { deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, sangat ramah anak.", htm: "Rp 25.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Mudah, semua kendaraan.", fasilitas: ["Pondokan", "Banana Boat", "Bilas"], waktuTerbaik: "15:00 - 17:00 WIB" } },
   { nama: "Pantai Sari Ringgung (Pesawaran)", lat: -5.5715, lng: 105.2624, info: { deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.", htm: "Rp 20.000 / Orang", jam: "06:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Perahu", "Masjid Apung", "Kafe"], waktuTerbaik: "08:00 - 11:00 WIB" } },
   { nama: "Pantai Klara (Pesawaran)", lat: -5.5968, lng: 105.2215, info: { deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.", htm: "Rp 15.000 / Motor", jam: "07:00 - 18:00 WIB", akses: "Pinggir jalan raya.", fasilitas: ["Gazebo", "Kano", "Kamar Mandi"], waktuTerbaik: "10:00 - 14:00 WIB" } },
   { nama: "Pantai Dewi Mandapa (Pesawaran)", lat: -5.6254, lng: 105.2146, info: { deskripsi: "Wisata mangrove dengan jembatan kayu dan Pulau Cinta.", htm: "Rp 15.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Aspal & tanah.", fasilitas: ["Foto Mangrove", "Pulau Cinta", "Warung"], waktuTerbaik: "16:00 - 18:00 WIB" } },
@@ -56,14 +56,14 @@ const PANTAI_LAMPUNG = [
 const GEMINI_API_KEY = "AIzaSyA6S91KCuWDnrGJHykVDobLTS8CfvtWejs";
 
 // ==========================================
-// CHATBOT COMPONENT (DARK MODE SUPPORTED)
+// CHATBOT COMPONENT
 // ==========================================
 const FloatingChatbot = ({ isDark }: { isDark: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
-    { role: "bot", text: "Halo! Saya SmartBeach AI. Ada yang bisa saya bantu terkait liburan pantai Anda di Lampung?" }
+    { role: "bot", text: "Halo! Saya **SmartBeach AI**. Ada yang bisa saya bantu terkait liburan pantai Anda di Lampung?" }
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -161,7 +161,7 @@ const FloatingChatbot = ({ isDark }: { isDark: boolean }) => {
 };
 
 // ==========================================
-// MAIN PAGE
+// MAIN DASHBOARD (FULL LIGHT/DARK MODE)
 // ==========================================
 export default function Home() {
   const [isDark, setIsDark] = useState(false);
@@ -233,7 +233,7 @@ export default function Home() {
 
   return (
     <div className={`${isDark ? 'dark' : ''} ${poppins.className}`}>
-      <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 pb-20">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 pb-20">
         
         <FloatingChatbot isDark={isDark} />
 
@@ -279,7 +279,7 @@ export default function Home() {
                     <select value={selectedPantai} onChange={(e) => {
                       const p = PANTAI_LAMPUNG.find(x => x.nama === e.target.value);
                       if(p) { setSelectedPantai(p.nama); setPosition({lat: p.lat, lng: p.lng}); setHasil(null); }
-                    }} className="w-full p-5 bg-slate-100 dark:bg-slate-800/50 rounded-2xl font-bold appearance-none outline-none focus:ring-2 focus:ring-blue-500/30">
+                    }} className="w-full p-5 bg-slate-100 dark:bg-slate-800/50 rounded-2xl font-bold appearance-none outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-800 dark:text-slate-100 border border-transparent dark:border-slate-700">
                       {PANTAI_LAMPUNG.map((p, idx) => <option key={idx} value={p.nama}>{p.nama}</option>)}
                     </select>
                     <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 opacity-30" size={20} />
@@ -311,8 +311,8 @@ export default function Home() {
               <div className={`mx-8 md:mx-20 -mt-12 mb-12 p-8 md:p-12 rounded-[3rem] flex flex-col md:flex-row items-center gap-10 border-2 dark:border-slate-800 shadow-2xl ${getSaran(hasil.rekomendasi).bg}`}>
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-lg shrink-0 scale-125">{React.cloneElement(getSaran(hasil.rekomendasi).icon, { size: 54 })}</div>
                 <div className="text-center md:text-left space-y-3">
-                  <h3 className="font-black text-3xl tracking-tight">Rekomendasi Aktivitas</h3>
-                  <p className="text-lg md:text-2xl opacity-70 leading-relaxed font-medium">"{hasil.rekomendasi === "Aman" ? "Kondisi laut tenang, sangat mendukung untuk berenang atau menyewa jukung." : "Terdapat indikasi angin kencang, disarankan tetap berada di daratan."}"</p>
+                  <h3 className="font-black text-3xl tracking-tight text-slate-800 dark:text-white">Rekomendasi Aktivitas</h3>
+                  <p className="text-lg md:text-2xl opacity-70 leading-relaxed font-medium text-slate-600 dark:text-slate-300">"{hasil.rekomendasi === "Aman" ? "Kondisi laut tenang, sangat mendukung untuk berenang atau menyewa jukung." : "Terdapat indikasi angin kencang, disarankan tetap berada di daratan."}"</p>
                 </div>
               </div>
 
@@ -320,12 +320,12 @@ export default function Home() {
                 {[
                   { icon: ThermometerSun, label: "Suhu", val: `${hasil.detail_cuaca.suhu_saat_ini}°C`, c: "text-orange-500", b: "bg-orange-50 dark:bg-orange-950/20" },
                   { icon: Wind, label: "Angin", val: `${hasil.detail_cuaca.angin_maks_ms} m/s`, c: "text-blue-500", b: "bg-blue-50 dark:bg-blue-950/20" },
-                  { icon: Waves, label: "Gelombang", val: `${hasil.detail_cuaca.tinggi_gelombang_meter}m`, c: "text-cyan-600", b: "bg-cyan-50 dark:bg-cyan-950/20" },
+                  { icon: Waves, label: "Ombak", val: hasil.detail_cuaca.tinggi_gelombang_meter !== "N/A" ? `${hasil.detail_cuaca.tinggi_gelombang_meter}m` : "N/A", c: "text-cyan-600", b: "bg-cyan-50 dark:bg-cyan-950/20" },
                   { icon: Sunrise, label: "Sunrise", val: hasil.detail_cuaca.sunrise, c: "text-amber-500", b: "bg-amber-50 dark:bg-amber-950/20" },
                   { icon: Sunset, label: "Sunset", val: hasil.detail_cuaca.sunset, c: "text-indigo-600", b: "bg-indigo-50 dark:bg-indigo-950/20" },
                   { icon: Sun, label: "UV Index", val: hasil.detail_cuaca.uv_index, c: "text-red-500", b: "bg-red-50 dark:bg-red-950/20" },
                 ].map((x, i) => (
-                  <div key={i} className="flex flex-col items-center text-center p-8 bg-slate-50/50 dark:bg-slate-800/30 rounded-[2.5rem] border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all">
+                  <div key={i} className="flex flex-col items-center text-center p-8 bg-slate-50/50 dark:bg-slate-800/30 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
                     <div className={`w-16 h-16 ${x.b} ${x.c} rounded-2xl flex items-center justify-center mb-5 shadow-inner`}>
                       <x.icon size={32} />
                     </div>
@@ -337,36 +337,97 @@ export default function Home() {
             </div>
           )}
 
+          {/* BEACH DIRECTORY */}
+          {(() => {
+            const p = PANTAI_LAMPUNG.find(x => x.nama === selectedPantai);
+            if (p && p.info) {
+              return (
+                <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 md:p-14 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in slide-in-from-bottom-10 duration-700">
+                  <div className="flex flex-col md:flex-row items-center gap-6 mb-12 text-center md:text-left">
+                    <div className="bg-blue-600 text-white p-5 rounded-[1.5rem] shadow-xl shadow-blue-600/20"><Info size={32}/></div>
+                    <div>
+                      <h3 className="text-3xl md:text-4xl font-black tracking-tighter text-slate-800 dark:text-white">Panduan Wisata {p.nama}</h3>
+                      <p className="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em] mt-1">Eksplorasi Destinasi Terbaik Lampung</p>
+                    </div>
+                  </div>
+                  <div className="grid lg:grid-cols-2 gap-12 items-start">
+                    <div className="space-y-8">
+                      <div className="p-6 md:p-8 bg-slate-50 dark:bg-slate-800/50 rounded-[2rem] border-l-8 border-blue-600">
+                        <p className="text-slate-600 dark:text-slate-300 font-semibold text-lg md:text-xl italic leading-relaxed">"{p.info.deskripsi}"</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-5">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                          <Ticket size={24} className="text-emerald-500 mb-4"/>
+                          <p className="text-[10px] text-slate-400 font-black uppercase mb-1">Tiket Masuk</p>
+                          <p className="font-bold text-lg text-slate-700 dark:text-white">{p.info.htm}</p>
+                        </div>
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                          <Clock size={24} className="text-orange-500 mb-4"/>
+                          <p className="text-[10px] text-slate-400 font-black uppercase mb-1">Jam Operasional</p>
+                          <p className="font-bold text-lg text-slate-700 dark:text-white">{p.info.jam}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-6">
+                      <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 dark:bg-blue-600/20 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
+                        <p className="text-[10px] text-blue-500 dark:text-blue-400 font-black uppercase mb-4 tracking-[0.2em]">Aksesibilitas & Sarana</p>
+                        <div className="flex items-start gap-4 mb-6">
+                          <CarFront size={20} className="text-blue-500 shrink-0 mt-1"/>
+                          <p className="text-sm md:text-base font-medium text-slate-600 dark:text-slate-300 leading-relaxed">{p.info.akses}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2.5">
+                          {p.info.fasilitas.map((f, i) => <span key={i} className="px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-bold rounded-xl shadow-sm text-slate-700 dark:text-slate-200">{f}</span>)}
+                        </div>
+                      </div>
+                      {p.info.waktuTerbaik && (
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl flex gap-6 items-center shadow-xl shadow-blue-600/20 group cursor-default">
+                          <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-md group-hover:rotate-12 transition-transform"><Camera size={32}/></div>
+                          <div><p className="text-[10px] font-black text-blue-200 uppercase mb-1 tracking-widest">Waktu Terbaik</p><p className="text-base md:text-lg font-bold leading-tight">{p.info.waktuTerbaik}</p></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            return null;
+          })()}
+
           {/* AI DEEP SCAN SECTION */}
-          <section className="bg-slate-950 rounded-[4rem] p-10 md:p-24 text-white relative overflow-hidden shadow-2xl border-b-[12px] border-blue-600">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]"></div>
+          <section className="bg-white dark:bg-slate-900 rounded-[4rem] p-10 md:p-24 relative overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 border-b-[12px] border-b-blue-600 transition-colors">
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[120px]"></div>
+            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-600/5 dark:bg-indigo-600/10 rounded-full blur-[120px]"></div>
+            
             <div className="relative z-10 grid lg:grid-cols-2 gap-20 items-center">
               <div className="space-y-10 text-center lg:text-left">
-                <div className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 rounded-full border border-white/10">
-                  <Sparkles size={16} className="text-blue-400" />
-                  <span className="text-xs font-black uppercase tracking-widest text-blue-200">Provincial Radar Scan</span>
+                <div className="inline-flex items-center gap-3 px-6 py-2 bg-blue-50 dark:bg-blue-500/10 rounded-full border border-blue-100 dark:border-blue-500/20">
+                  <Sparkles size={16} className="text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-300">Provincial Radar Scan</span>
                 </div>
-                <h2 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter">AI Satelit <br/><span className="text-blue-500">Deep Scan.</span></h2>
-                <p className="text-xl opacity-60 font-medium leading-relaxed max-w-lg">Sistem kami memindai 20 pantai Lampung secara real-time. Temukan lokasi terbaik dalam 5 detik.</p>
-                <button onClick={handleDeepScan} disabled={isScanningAll} className="w-full sm:w-auto bg-white text-slate-950 px-14 py-7 rounded-3xl font-black text-xl hover:scale-105 transition-all flex items-center justify-center gap-4">
+                <h2 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-800 to-slate-500 dark:from-white dark:via-blue-100 dark:to-slate-400">
+                  AI Satelit <br/><span className="text-blue-600 dark:text-blue-500">Deep Scan.</span>
+                </h2>
+                <p className="text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-lg">Sistem kami memindai 20 pantai Lampung secara real-time. Temukan lokasi liburan paling aman hari ini.</p>
+                <button onClick={handleDeepScan} disabled={isScanningAll} className="w-full sm:w-auto bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-14 py-7 rounded-3xl font-black text-xl hover:scale-105 transition-all flex items-center justify-center gap-4 shadow-xl">
                   {isScanningAll ? <Loader2 className="animate-spin" /> : <Radar />} {isScanningAll ? "Scanning..." : "Mulai Pemindaian"}
                 </button>
               </div>
 
               <div className="w-full">
                 {rekomendasiTerbaik && (
-                  <div className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[3.5rem] animate-in slide-in-from-right-12 duration-1000 space-y-6">
-                    <p className="text-xs font-black uppercase tracking-widest text-blue-400 mb-8 flex items-center gap-3"><Trophy size={18} /> Best Conditions Found</p>
+                  <div className="bg-slate-50 dark:bg-white/5 backdrop-blur-3xl border border-slate-200 dark:border-white/10 p-10 rounded-[3.5rem] animate-in slide-in-from-right-12 duration-1000 space-y-6">
+                    <p className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-8 flex items-center gap-3"><Trophy size={18} /> Best Conditions Found</p>
                     {rekomendasiTerbaik.length > 0 ? rekomendasiTerbaik.slice(0, 2).map((p, i) => (
-                      <div key={i} onClick={() => pilihDariRekomendasi(p.nama, p.lat, p.lng)} className="bg-white/5 hover:bg-white/10 p-8 rounded-3xl border border-white/5 cursor-pointer transition-all hover:-translate-y-2 group relative">
-                        <div className={`absolute top-8 right-8 px-3 py-1 rounded-full text-[9px] font-black uppercase ${p.statusAI === 'Aman' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>{p.statusAI}</div>
-                        <h3 className="font-black text-2xl mb-4 group-hover:text-blue-400">{p.nama}</h3>
-                        <div className="flex gap-8 opacity-50">
+                      <div key={i} onClick={() => pilihDariRekomendasi(p.nama, p.lat, p.lng)} className="bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 p-8 rounded-3xl border border-slate-200 dark:border-white/5 cursor-pointer transition-all hover:-translate-y-2 relative group text-slate-800 dark:text-white">
+                        <div className={`absolute top-8 right-8 px-3 py-1 rounded-full text-[9px] font-black uppercase ${p.statusAI === 'Aman' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400' : 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400'}`}>{p.statusAI}</div>
+                        <h3 className="font-black text-2xl mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors pr-24">{p.nama}</h3>
+                        <div className="flex gap-8 opacity-60 dark:opacity-50">
                           <div className="flex items-center gap-2"><Wind size={16} /> <span className="font-bold">{p.cuaca.angin_ms}m/s</span></div>
                           <div className="flex items-center gap-2"><Waves size={16} /> <span className="font-bold">{p.cuaca.tinggi_gelombang_meter}m</span></div>
                         </div>
                       </div>
-                    )) : <div className="text-center py-20 opacity-20"><ShieldAlert size={64} className="mx-auto mb-4" /><p className="font-black uppercase tracking-widest">No Safe Location Detected</p></div>}
+                    )) : <div className="text-center py-20 text-slate-400"><ShieldAlert size={64} className="mx-auto mb-4 opacity-50" /><p className="font-black uppercase tracking-widest">No Safe Location Detected</p></div>}
                   </div>
                 )}
               </div>
@@ -374,7 +435,9 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="text-center pt-32 pb-12 opacity-20"><p className="text-xs font-black uppercase tracking-[0.8em]">Lampung Smart Beach Intelligence</p></footer>
+        <footer className="text-center pt-32 pb-12 opacity-40 dark:opacity-30">
+          <p className="text-xs font-black uppercase tracking-[0.8em]">Lampung Smart Beach Intelligence</p>
+        </footer>
       </div>
     </div>
   );
