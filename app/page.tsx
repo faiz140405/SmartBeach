@@ -9,7 +9,7 @@ import {
   CarFront, Info, Sunrise, Sunset, Camera, Loader2,
   Sparkles, Trophy, Map as MapIcon, Radar, Activity, Navigation, 
   ChevronDown, MessageCircle, X, Send, Bot, User,
-  BotMessageSquare, Sparkle, Moon
+  BotMessageSquare, Moon
 } from "lucide-react";
 
 const poppins = Poppins({
@@ -54,7 +54,7 @@ const PANTAI_LAMPUNG = [
 const GEMINI_API_KEY = "AIzaSyA6S91KCuWDnrGJHykVDobLTS8CfvtWejs";
 
 // ==========================================
-// CHATBOT COMPONENT (FIXED Z-INDEX & THEME)
+// CHATBOT COMPONENT (RESPONSIVE)
 // ==========================================
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -100,13 +100,13 @@ const FloatingChatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999]">
+    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999]">
       {/* Chat Window */}
-      <div className={`absolute bottom-20 right-0 w-[calc(100vw-48px)] max-w-[380px] h-[550px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+      <div className={`absolute bottom-20 right-0 w-[calc(100vw-32px)] md:w-[380px] h-[60vh] md:h-[550px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
         
-        <div className="bg-blue-600 p-5 flex items-center justify-between text-white shrink-0">
+        <div className="bg-blue-600 p-4 md:p-5 flex items-center justify-between text-white shrink-0">
           <div className="flex items-center gap-3">
-            <BotMessageSquare size={24} />
+            <BotMessageSquare size={22} />
             <div>
               <h3 className="font-bold text-sm">SmartBeach AI</h3>
               <p className="text-[10px] text-blue-200 font-bold tracking-widest">GEMINI POWERED</p>
@@ -117,13 +117,13 @@ const FloatingChatbot = () => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50 dark:bg-slate-950/50">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-950/50">
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'bot' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-white'}`}>
                 {msg.role === 'bot' ? <Bot size={16} /> : <User size={16} />}
               </div>
-              <div className={`p-3 md:p-4 rounded-2xl max-w-[80%] text-sm shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none'}`}
+              <div className={`p-3 md:p-4 rounded-2xl max-w-[80%] text-[13px] md:text-sm shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-tl-none'}`}
                 dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
               />
             </div>
@@ -132,7 +132,7 @@ const FloatingChatbot = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={handleSend} className="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2">
+        <form onSubmit={handleSend} className="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2">
           <input 
             type="text" 
             value={input}
@@ -147,8 +147,8 @@ const FloatingChatbot = () => {
       </div>
 
       {/* Toggle Button */}
-      <button onClick={() => setIsOpen(!isOpen)} className="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-xl text-white transition-transform hover:scale-105 active:scale-95">
-        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
+      <button onClick={() => setIsOpen(!isOpen)} className="w-14 h-14 md:w-16 md:h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-xl text-white transition-transform hover:scale-105 active:scale-95">
+        {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
       </button>
     </div>
   );
@@ -167,7 +167,7 @@ export default function Home() {
   const [rekomendasiTerbaik, setRekomendasiTerbaik] = useState<any[] | null>(null);
   const [isScanningAll, setIsScanningAll] = useState(false);
 
-  // GLOBAL DARK MODE TOGGLE (Aman untuk Tailwind)
+  // GLOBAL DARK MODE TOGGLE
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
@@ -226,10 +226,26 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // ✅ PERBAIKAN: Menambahkan kembali properti `teks` yang sempat hilang
   const getSaran = (status: string) => {
-    if (status === "Aman") return { icon: <CheckCircle2 className="text-emerald-500" />, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800" };
-    if (status === "Waspada") return { icon: <AlertTriangle className="text-amber-500" />, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800" };
-    return { icon: <ShieldAlert className="text-red-500" />, color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800" };
+    if (status === "Aman") return { 
+      teks: "Kondisi laut sangat bersahabat. Nikmati liburan Anda!", 
+      icon: <CheckCircle2 className="text-emerald-500" />, 
+      color: "text-emerald-600 dark:text-emerald-400", 
+      bg: "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800" 
+    };
+    if (status === "Waspada") return { 
+      teks: "Angin/ombak sedikit moderat. Harap berhati-hati di air.", 
+      icon: <AlertTriangle className="text-amber-500" />, 
+      color: "text-amber-600 dark:text-amber-400", 
+      bg: "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800" 
+    };
+    return { 
+      teks: "Terdapat indikasi cuaca ekstrem. Disarankan menjauhi bibir pantai.", 
+      icon: <ShieldAlert className="text-red-500" />, 
+      color: "text-red-600 dark:text-red-400", 
+      bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800" 
+    };
   };
 
   return (
@@ -239,7 +255,7 @@ export default function Home() {
 
       {/* NAVBAR */}
       <nav className="fixed top-0 left-0 right-0 z-[5000] bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-blue-600 p-1.5 rounded-lg text-white"><Waves size={20} /></div>
             <span className="font-black text-lg tracking-tight">SmartBeach<span className="text-blue-600">.ai</span></span>
@@ -249,7 +265,6 @@ export default function Home() {
               <span className="relative flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
               <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Satelit Aktif</span>
             </div>
-            {/* Tombol Tema */}
             <button onClick={toggleDarkMode} className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
@@ -257,26 +272,27 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* DASHBOARD LAYOUT (GRID) */}
-      <div className="pt-24 px-4 sm:px-6 max-w-7xl mx-auto">
+      {/* DASHBOARD LAYOUT (GRID RESPONSIVE) */}
+      <div className="pt-24 px-4 md:px-6 max-w-7xl mx-auto">
         
         {/* Error Alert */}
         {error && (
-          <div className="mb-6 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 font-medium">
+          <div className="mb-6 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 font-medium text-sm md:text-base">
             <ShieldAlert size={20} /> {error}
           </div>
         )}
 
+        {/* TOP SECTION: KONTROL (KIRI) & PETA (KANAN) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* KOLOM KIRI: KONTROL RADAR */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-              <div className="flex items-center gap-3 mb-6">
+          {/* KOLOM KIRI: KONTROL */}
+          <div className="lg:col-span-1 flex flex-col gap-6 order-2 lg:order-1">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 md:p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-3 mb-5">
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg">
                   <Navigation size={20} />
                 </div>
-                <h2 className="font-bold text-lg">Pilih Lokasi</h2>
+                <h2 className="font-bold text-lg">Pilih Lokasi Pantai</h2>
               </div>
               
               <div className="space-y-4">
@@ -287,21 +303,21 @@ export default function Home() {
                       const p = PANTAI_LAMPUNG.find(x => x.nama === e.target.value);
                       if(p) { setSelectedPantai(p.nama); setPosition({lat: p.lat, lng: p.lng}); setHasil(null); }
                     }}
-                    className="w-full p-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-slate-800 dark:text-slate-100"
+                    className="w-full p-3.5 md:p-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-slate-800 dark:text-slate-100 text-sm md:text-base"
                   >
                     {PANTAI_LAMPUNG.map((p, idx) => <option key={idx} value={p.nama}>{p.nama}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />
                 </div>
 
-                <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 text-sm font-mono text-slate-500 dark:text-slate-400">
-                  <MapPin size={16} />
-                  <span>Lat: {position.lat.toFixed(4)}</span> | <span>Lon: {position.lng.toFixed(4)}</span>
+                <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 text-xs md:text-sm font-mono text-slate-500 dark:text-slate-400 justify-center">
+                  <MapPin size={16} className="shrink-0" />
+                  <span>Lat: {position.lat.toFixed(4)}</span> <span className="hidden sm:inline">|</span> <span>Lon: {position.lng.toFixed(4)}</span>
                 </div>
 
                 <button 
                   onClick={handlePredict} disabled={loading} 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl font-bold transition-all shadow-md shadow-blue-600/20 disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl font-bold transition-all shadow-md shadow-blue-600/20 disabled:opacity-70 flex items-center justify-center gap-2 text-sm md:text-base"
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : <Radar size={20} />}
                   {loading ? "Menganalisis Satelit..." : "Pindai Keamanan Laut"}
@@ -314,10 +330,10 @@ export default function Home() {
               const p = PANTAI_LAMPUNG.find(x => x.nama === selectedPantai);
               if (p && p.info) {
                 return (
-                  <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
-                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><Info size={18} className="text-blue-500" /> Info {p.nama.split(" ")[0]}</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 italic">"{p.info.deskripsi}"</p>
-                    <div className="space-y-3 text-sm">
+                  <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 md:p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                    <h3 className="font-bold text-base md:text-lg mb-3 flex items-center gap-2"><Info size={18} className="text-blue-500" /> Info Wisata</h3>
+                    <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-4 italic leading-relaxed">"{p.info.deskripsi}"</p>
+                    <div className="space-y-3 text-xs md:text-sm">
                       <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
                         <span className="text-slate-500 flex items-center gap-2"><Ticket size={14}/> Tiket</span>
                         <span className="font-semibold text-right">{p.info.htm}</span>
@@ -339,40 +355,41 @@ export default function Home() {
           </div>
 
           {/* KOLOM KANAN: MAP & HASIL */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6 order-1 lg:order-2">
             
-            {/* PETA */}
-            <div className="w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 relative z-0">
+            {/* PETA TAMPILAN HP DIPERBAIKI TINGGINYA */}
+            <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 relative z-0">
               <MapPicker position={position} setPosition={setPosition} daftarPantai={PANTAI_LAMPUNG.filter(p => p.nama !== "Daftar Pantai...")} />
             </div>
 
-            {/* HASIL SCAN (MUNCUL SETELAH DIPINDAI) */}
+            {/* HASIL SCAN (RESPONSIVE GRID) */}
             {hasil && (
-              <div id="result-area" className={`rounded-3xl p-6 md:p-8 border-2 shadow-lg animate-in slide-in-from-bottom-6 duration-500 ${getSaran(hasil.rekomendasi).bg}`}>
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 mb-8">
-                  <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm">
-                    {React.cloneElement(getSaran(hasil.rekomendasi).icon, { size: 48 })}
+              <div id="result-area" className={`rounded-3xl p-5 md:p-8 border-2 shadow-lg animate-in slide-in-from-bottom-6 duration-500 ${getSaran(hasil.rekomendasi).bg}`}>
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 mb-6 md:mb-8">
+                  <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm shrink-0">
+                    {React.cloneElement(getSaran(hasil.rekomendasi).icon, { size: 40 })}
                   </div>
                   <div className="text-center md:text-left">
-                    <p className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Status Keamanan AI</p>
-                    <h2 className={`text-4xl md:text-5xl font-black mb-3 ${getSaran(hasil.rekomendasi).color}`}>{hasil.rekomendasi}</h2>
-                    <p className="text-slate-700 dark:text-slate-300 font-medium">{getSaran(hasil.rekomendasi).teks}</p>
+                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Status Keamanan AI</p>
+                    <h2 className={`text-3xl md:text-5xl font-black mb-2 ${getSaran(hasil.rekomendasi).color}`}>{hasil.rekomendasi}</h2>
+                    <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium">{getSaran(hasil.rekomendasi).teks}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {/* GRID 2 KOLOM DI HP, 3 KOLOM DI TABLET/PC */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                   {[
                     { icon: ThermometerSun, label: "Suhu Udara", val: `${hasil.detail_cuaca.suhu_saat_ini}°C` },
                     { icon: Wind, label: "Kec. Angin", val: `${hasil.detail_cuaca.angin_maks_ms} m/s` },
-                    { icon: Waves, label: "Tinggi Ombak", val: hasil.detail_cuaca.tinggi_gelombang_meter !== "N/A" ? `${hasil.detail_cuaca.tinggi_gelombang_meter}m` : "N/A" },
+                    { icon: Waves, label: "Ombak", val: hasil.detail_cuaca.tinggi_gelombang_meter !== "N/A" ? `${hasil.detail_cuaca.tinggi_gelombang_meter}m` : "N/A" },
                     { icon: Sunrise, label: "Matahari Terbit", val: hasil.detail_cuaca.sunrise },
                     { icon: Sunset, label: "Matahari Terbenam", val: hasil.detail_cuaca.sunset },
                     { icon: Sun, label: "Indeks UV", val: hasil.detail_cuaca.uv_index },
                   ].map((x, i) => (
-                    <div key={i} className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-4 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center">
-                      <x.icon size={24} className="text-slate-600 dark:text-slate-400 mb-2" />
-                      <span className="text-[10px] font-bold text-slate-500 uppercase">{x.label}</span>
-                      <span className="text-lg font-black text-slate-800 dark:text-slate-100">{x.val}</span>
+                    <div key={i} className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-3 md:p-4 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center">
+                      <x.icon size={20} className="text-slate-600 dark:text-slate-400 mb-1.5 md:mb-2" />
+                      <span className="text-[9px] md:text-[10px] font-bold text-slate-500 uppercase">{x.label}</span>
+                      <span className="text-base md:text-lg font-black text-slate-800 dark:text-slate-100">{x.val}</span>
                     </div>
                   ))}
                 </div>
@@ -381,34 +398,34 @@ export default function Home() {
           </div>
         </div>
 
-        {/* AI DEEP SCAN SECTION (FULL WIDTH) */}
-        <section className="mt-12 bg-slate-900 dark:bg-slate-900 rounded-[3rem] p-8 md:p-16 text-white relative overflow-hidden shadow-2xl border border-slate-800">
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-[100px]"></div>
+        {/* AI DEEP SCAN SECTION (MENUMPUK DI BAWAH HP) */}
+        <section className="mt-12 bg-slate-900 dark:bg-slate-900 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 text-white relative overflow-hidden shadow-2xl border border-slate-800">
+          <div className="absolute top-0 right-0 w-64 md:w-[400px] h-64 md:h-[400px] bg-blue-600/20 rounded-full blur-[80px] md:blur-[100px]"></div>
           
-          <div className="relative z-10 grid lg:grid-cols-5 gap-12 items-center">
-            <div className="lg:col-span-2 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/20 rounded-full border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-widest">
-                <Sparkles size={14} /> Provincial Radar
+          <div className="relative z-10 grid lg:grid-cols-5 gap-8 md:gap-12 items-center">
+            <div className="lg:col-span-2 space-y-4 md:space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/20 rounded-full border border-blue-500/30 text-blue-300 text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                <Sparkles size={14} /> AI Deep Scan
               </div>
-              <h2 className="text-4xl md:text-5xl font-black leading-tight">Satelit AI <br/><span className="text-blue-400">Deep Scan.</span></h2>
-              <p className="text-slate-400 font-medium">Pindai 20 pantai pesisir Lampung secara serentak. Temukan lokasi wisata laut paling aman untuk dikunjungi hari ini.</p>
-              <button onClick={handleDeepScan} disabled={isScanningAll} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3">
-                {isScanningAll ? <Loader2 className="animate-spin" /> : <Radar />} {isScanningAll ? "Memindai 20 Lokasi..." : "Mulai Pemindaian Massal"}
+              <h2 className="text-3xl md:text-5xl font-black leading-tight">Radar Pesisir <br/><span className="text-blue-400">Provinsi.</span></h2>
+              <p className="text-sm md:text-base text-slate-400 font-medium">Pindai seluruh pantai Lampung sekaligus. Temukan lokasi wisata paling aman hari ini dengan sekali klik.</p>
+              <button onClick={handleDeepScan} disabled={isScanningAll} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 md:gap-3 text-sm md:text-base">
+                {isScanningAll ? <Loader2 className="animate-spin" size={18} /> : <Radar size={18} />} {isScanningAll ? "Memindai Area..." : "Mulai Pemindaian"}
               </button>
             </div>
 
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 w-full">
               {rekomendasiTerbaik !== null && (
-                <div className="bg-white/5 border border-white/10 p-6 md:p-8 rounded-3xl">
+                <div className="bg-white/5 border border-white/10 p-5 md:p-6 rounded-3xl w-full">
                   {rekomendasiTerbaik.length > 0 ? (
                     <div className="space-y-4">
-                      <p className="text-xs font-bold uppercase tracking-widest text-blue-400 flex items-center gap-2 mb-6"><Trophy size={16} /> Pantai Teraman Hari Ini</p>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-blue-400 flex items-center gap-2 mb-4"><Trophy size={14} /> Pantai Teraman Hari Ini</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                         {rekomendasiTerbaik.slice(0, 4).map((p, i) => (
-                          <div key={i} onClick={() => pilihDariRekomendasi(p.nama, p.lat, p.lng)} className="bg-slate-800 hover:bg-slate-700 p-5 rounded-2xl cursor-pointer transition-all border border-slate-700 hover:border-blue-500 relative">
-                            <h3 className="font-bold text-sm text-white mb-3 pr-10">{p.nama}</h3>
-                            <div className={`absolute top-4 right-4 w-3 h-3 rounded-full ${p.statusAI === 'Aman' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-amber-500'}`}></div>
-                            <div className="flex gap-4 text-xs text-slate-400">
+                          <div key={i} onClick={() => pilihDariRekomendasi(p.nama, p.lat, p.lng)} className="bg-slate-800 hover:bg-slate-700 p-4 md:p-5 rounded-2xl cursor-pointer transition-all border border-slate-700 hover:border-blue-500 relative">
+                            <h3 className="font-bold text-xs md:text-sm text-white mb-2 md:mb-3 pr-8">{p.nama}</h3>
+                            <div className={`absolute top-4 right-4 w-2.5 h-2.5 rounded-full ${p.statusAI === 'Aman' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500'}`}></div>
+                            <div className="flex gap-3 md:gap-4 text-[10px] md:text-xs text-slate-400">
                               <span className="flex items-center gap-1"><Wind size={12}/> {p.cuaca.angin_ms}m/s</span>
                               <span className="flex items-center gap-1"><Waves size={12}/> {p.cuaca.tinggi_gelombang_meter}m</span>
                             </div>
@@ -417,7 +434,7 @@ export default function Home() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-12 opacity-50"><ShieldAlert size={48} className="mx-auto mb-4" /><p className="font-bold uppercase tracking-widest">Cuaca Ekstrem Merata</p></div>
+                    <div className="text-center py-8 md:py-12 opacity-50"><ShieldAlert size={36} className="mx-auto mb-3" /><p className="font-bold text-xs md:text-sm uppercase tracking-widest">Cuaca Ekstrem Merata</p></div>
                   )}
                 </div>
               )}
