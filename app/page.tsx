@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Poppins } from "next/font/google";
 import { 
   MapPin, Wind, ThermometerSun, Sun, Waves, 
   CheckCircle2, AlertTriangle, ShieldAlert, Ticket, Clock, 
   CarFront, Info, Check, Sunrise, Sunset, Camera, Loader2,
-  Sparkles, Trophy, Map as MapIcon, Radar, Activity, Navigation, ChevronDown
+  Sparkles, Trophy, Map as MapIcon, Radar, Activity, Navigation, ChevronDown,
+  MessageCircle, X, Send, Bot, User
 } from "lucide-react";
 
 const poppins = Poppins({
@@ -49,6 +50,125 @@ const PANTAI_LAMPUNG = [
   { nama: "Pantai Batu Karang (Tanggamus)", lat: -5.7001, lng: 105.0845, info: { deskripsi: "Pantai tersembunyi dengan bebatuan besar pelindung ombak.", htm: "Rp 10.000 / Orang", jam: "08:00 - 17:00 WIB", akses: "Jalan bebatuan.", fasilitas: ["Mancing", "Relaksasi"], waktuTerbaik: "Pagi Hari" } }
 ];
 
+// ==========================================
+// KOMPONEN CHATBOT MENGAMBANG
+// ==========================================
+const FloatingChatbot = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: "bot", text: "Halo! 🌊 Saya asisten AI SmartBeach. Ada yang ingin Anda tanyakan seputar keamanan ombak atau rekomendasi pantai hari ini?" }
+  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping, isOpen]);
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setMessages(prev => [...prev, { role: "user", text: input }]);
+    setInput("");
+    setIsTyping(true);
+
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages(prev => [...prev, { 
+        role: "bot", 
+        text: "Menarik! Saat ini fitur obrolan AI tingkat lanjut sedang dalam tahap integrasi. Untuk sementara, Anda bisa menggunakan fitur 'Deep Scan' di halaman utama untuk memantau keamanan 20 pantai sekaligus secara real-time! 🚀" 
+      }]);
+    }, 1500);
+  };
+
+  return (
+    <div className="fixed bottom-6 right-4 md:right-8 z-[9999] font-poppins">
+      <div className={`absolute bottom-20 right-0 w-[calc(100vw-32px)] md:w-[380px] h-[60vh] md:h-[500px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 md:p-5 flex items-center justify-between text-white shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2 rounded-full">
+              <Bot size={20} />
+            </div>
+            <div>
+              <h3 className="font-black text-sm leading-tight">SmartBeach AI</h3>
+              <p className="text-[10px] text-blue-100 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+              </p>
+            </div>
+          </div>
+          <button onClick={() => setIsOpen(false)} className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 md:p-5 space-y-4 bg-slate-50">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {msg.role === 'bot' && (
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200 text-blue-600">
+                  <Bot size={16} />
+                </div>
+              )}
+              <div className={`p-3 md:p-4 rounded-2xl max-w-[80%] text-xs md:text-sm shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white text-slate-700 border border-slate-100 rounded-bl-sm'}`}>
+                {msg.text}
+              </div>
+              {msg.role === 'user' && (
+                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0 text-white">
+                  <User size={16} />
+                </div>
+              )}
+            </div>
+          ))}
+          
+          {isTyping && (
+            <div className="flex gap-3 justify-start">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200 text-blue-600">
+                <Bot size={16} />
+              </div>
+              <div className="p-4 bg-white border border-slate-100 rounded-2xl rounded-bl-sm flex gap-1.5 items-center">
+                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
+                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <form onSubmit={handleSend} className="p-3 bg-white border-t border-slate-100 flex gap-2 shrink-0">
+          <input 
+            type="text" 
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ketik pertanyaan Anda..." 
+            className="flex-1 bg-slate-100 text-sm p-3 md:p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium text-slate-700"
+          />
+          <button 
+            type="submit" 
+            disabled={!input.trim()}
+            className="bg-blue-600 text-white p-3 md:p-4 rounded-2xl hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors flex items-center justify-center"
+          >
+            <Send size={18} className="ml-1" />
+          </button>
+        </form>
+      </div>
+
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-14 h-14 md:w-16 md:h-16 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-full flex items-center justify-center shadow-[0_10px_25px_-5px_rgba(37,99,235,0.5)] transition-all duration-300 hover:scale-110"
+      >
+        {isOpen ? <X size={28} /> : <MessageCircle size={28} />}
+        {!isOpen && <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>}
+      </button>
+    </div>
+  );
+};
+
+// ==========================================
+// HALAMAN UTAMA
+// ==========================================
 export default function Home() {
   const [position, setPosition] = useState({ lat: -5.4254, lng: 105.2590 });
   const [selectedPantai, setSelectedPantai] = useState(PANTAI_LAMPUNG[0].nama);
@@ -86,7 +206,7 @@ export default function Home() {
     setIsScanningAll(true); setRekomendasiTerbaik(null); setError("");
     
     try {
-      const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Pilih Daftar Pantai...");
+      const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Daftar Pantai...");
       const hasilSemua = [];
 
       // MENGGUNAKAN LOOPING SATU PER SATU DENGAN JEDA WAKTU
@@ -131,6 +251,7 @@ export default function Home() {
       setIsScanningAll(false); 
     }
   };
+
   const pilihDariRekomendasi = (nama: string, lat: number, lng: number) => {
     setSelectedPantai(nama); setPosition({ lat, lng }); setHasil(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -143,8 +264,11 @@ export default function Home() {
   };
 
   return (
-    <div className="font-poppins min-h-screen bg-slate-50 text-slate-900 pb-12 selection:bg-blue-100 overflow-x-hidden">
+    <div className="font-poppins min-h-screen bg-slate-50 text-slate-900 pb-12 selection:bg-blue-100 overflow-x-hidden relative">
       
+      {/* Memasukkan Komponen Chatbot */}
+      <FloatingChatbot />
+
       {/* Menggabungkan CSS External Khusus untuk Mobile Layout */}
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
