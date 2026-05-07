@@ -17,6 +17,9 @@ const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
+// ==========================================
+// PENTING: GANTI KODE DI BAWAH INI JIKA MAU PAKAI LEAFLET ASLI
+// ==========================================
 const MapPicker = dynamic(() => import("./MapPicker"), { 
   ssr: false,
   loading: () => (
@@ -64,10 +67,29 @@ const FloatingChatbot = () => {
     { role: "bot", text: "Halo! Saya SmartBeach AI. Ada yang bisa saya bantu terkait liburan pantai Anda di Lampung?" }
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Auto-scroll ke bawah saat pesan bertambah
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping, isOpen]);
+
+  // Fungsi untuk auto-resize tinggi textarea
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset dulu
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`; // Max height 120px
+    }
+  };
+
+  // Mencegah enter membuat baris baru jika ditekan tanpa shift (khusus desktop)
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend(e as unknown as React.FormEvent);
+    }
+  };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +98,12 @@ const FloatingChatbot = () => {
     const userText = input;
     setMessages(prev => [...prev, { role: "user", text: userText }]);
     setInput("");
+    
+    // Kembalikan ukuran textarea ke semula
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+
     setIsTyping(true);
 
     try {
@@ -131,15 +159,18 @@ const FloatingChatbot = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={handleSend} className="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-2">
-          <input 
-            type="text" 
+        <form onSubmit={handleSend} className="p-3 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-end gap-2 shrink-0">
+          <textarea 
+            ref={textareaRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
             placeholder="Ketikkan pesan..." 
-            className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white text-sm p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+            rows={1}
+            className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white text-sm p-3 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-[120px] min-h-[44px] overflow-y-auto"
+            style={{ paddingBottom: '12px', paddingTop: '12px' }}
           />
-          <button type="submit" disabled={!input.trim()} className="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={!input.trim() || isTyping} className="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 disabled:opacity-50 h-[44px] shrink-0">
             <Send size={18} />
           </button>
         </form>
