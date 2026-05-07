@@ -252,6 +252,14 @@ export default function Home() {
     finally { setIsScanningAll(false); }
   };
 
+  const pilihDariRekomendasi = (nama: string, lat: number, lng: number) => {
+    setSelectedPantai(nama); 
+    setPosition({ lat, lng }); 
+    setHasil(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsRadarOpen(true); // Membuka kembali radar jika tertutup
+  };
+
   const getSaran = (status: string) => {
     if (status === "Aman") return { teks: "Sangat Aman! Nikmati aktivitas air dengan nyaman.", icon: <CheckCircle2 className="text-emerald-500" />, color: "from-emerald-500 to-teal-600", bg: "bg-emerald-50 border-emerald-100" };
     if (status === "Waspada") return { teks: "Perhatian. Angin/ombak sedang moderat. Tetap waspada.", icon: <AlertTriangle className="text-amber-500" />, color: "from-amber-400 to-orange-500", bg: "bg-amber-50 border-amber-100" };
