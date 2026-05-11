@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, useEffect, Suspense } from "react";
 import { 
   MapPin, Wind, ThermometerSun, Sun, Waves, 
