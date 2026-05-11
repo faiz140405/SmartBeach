@@ -104,7 +104,7 @@ const PANTAI_LAMPUNG = [
   { nama: "Pantai Batu Karang (Tanggamus)", lat: -5.7001, lng: 105.0845, info: { deskripsi: "Pantai tersembunyi dengan bebatuan besar pelindung ombak.", htm: "Rp 10.000 / Orang", jam: "08:00 - 17:00 WIB", akses: "Jalan bebatuan.", fasilitas: ["Mancing", "Relaksasi"], waktuTerbaik: "Pagi Hari" } }
 ];
 
-const GEMINI_API_KEY = "AIzaSyA6S91KCuWDnrGJHykVDobLTS8CfvtWejs";
+const GEMINI_API_KEY = "AIzaSyBACWToYsyaqS-Bj0BEiDyEk6LSdE-YbH0";
 
 // ==========================================
 // CHATBOT COMPONENT (MEMISAHKAN FIXED LAYOUT AGAR TIDAK BERTUMPUK)
@@ -156,7 +156,7 @@ const FloatingChatbot = () => {
       // ✅ PERBAIKAN: Menggunakan format payload Gemini yang paling stabil
       const systemPrompt = `Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah.\n\nPertanyaan: ${userText}`;
       
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
