@@ -107,7 +107,7 @@ const PANTAI_LAMPUNG = [
 const GEMINI_API_KEY = "AIzaSyA6S91KCuWDnrGJHykVDobLTS8CfvtWejs";
 
 // ==========================================
-// CHATBOT COMPONENT (RESPONSIVE & FIXED LAYOUT)
+// CHATBOT COMPONENT (MEMISAHKAN FIXED LAYOUT AGAR TIDAK BERTUMPUK)
 // ==========================================
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -153,16 +153,15 @@ const FloatingChatbot = () => {
     setIsTyping(true);
 
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
+      // ✅ PERBAIKAN: Menggunakan format payload Gemini yang paling stabil
+      const systemPrompt = `Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah.\n\nPertanyaan: ${userText}`;
+      
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: "Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah." }]
-          },
           contents: [{ 
-            role: "user", 
-            parts: [{ text: userText }] 
+            parts: [{ text: systemPrompt }] 
           }] 
         })
       });
@@ -179,8 +178,9 @@ const FloatingChatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[9999]">
-      <div className={`absolute bottom-20 right-0 w-[calc(100vw-32px)] md:w-[380px] h-[65vh] md:h-[550px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
+    <>
+      {/* Chat Window - Dipisah dari parent agar posisinya mutlak relatif terhadap layar */}
+      <div className={`fixed bottom-24 right-4 md:right-8 w-[calc(100vw-32px)] md:w-[380px] h-[65vh] md:h-[550px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right z-[99999] ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
         
         <div className="bg-blue-600 p-4 flex items-center justify-between text-white shrink-0 shadow-sm z-10 relative">
           <div className="flex items-center gap-3">
@@ -220,7 +220,7 @@ const FloatingChatbot = () => {
             onKeyDown={handleKeyDown}
             placeholder="Tanya info pantai..." 
             rows={1}
-            className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white text-sm px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-[100px] min-h-[44px] overflow-y-auto placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors font-poppins"
+            className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white text-sm px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-[100px] min-h-[44px] overflow-y-auto placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors font-sans"
             style={{ paddingBottom: '12px', paddingTop: '12px' }}
           />
           <button type="submit" disabled={!input.trim() || isTyping} className="bg-blue-600 text-white p-3 rounded-2xl hover:bg-blue-700 disabled:opacity-50 h-[44px] w-[44px] flex items-center justify-center shrink-0 shadow-md">
@@ -229,12 +229,13 @@ const FloatingChatbot = () => {
         </form>
       </div>
 
-      <button onClick={() => setIsOpen(!isOpen)} className="w-14 h-14 md:w-16 md:h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] text-white transition-transform hover:scale-105 active:scale-95 relative">
+      {/* Toggle Button - Diposisikan absolut terhadap Window utama agar bebas tumpang tindih */}
+      <button onClick={() => setIsOpen(!isOpen)} className="fixed bottom-4 right-4 md:bottom-8 md:right-8 w-14 h-14 md:w-16 md:h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] text-white transition-transform hover:scale-105 active:scale-95 z-[100000]">
         {isOpen ? <X size={24} /> : <MessageCircle size={28} />}
         {!isOpen && <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full animate-ping"></span>}
         {!isOpen && <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full"></span>}
       </button>
-    </div>
+    </>
   );
 };
 
@@ -296,7 +297,8 @@ export default function Home() {
             hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
           }
         } catch (e) {}
-        await delay(400); 
+        // ✅ PERBAIKAN: Meningkatkan delay menjadi 800ms agar Satelit tidak memblokir dan mengembalikan nilai 0 (Rate Limit Open-Meteo)
+        await delay(800); 
       }
       let kandidat = hasilSemua.filter(p => p.statusAI === "Aman");
       if (kandidat.length === 0) kandidat = hasilSemua.filter(p => p.statusAI === "Waspada");
@@ -311,9 +313,13 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // ✅ PERBAIKAN: Menangani angka 0 murni dari API (Jika suhu 0 di Lampung, dipastikan sensor error)
   const formatData = (val: any, suffix: string = "") => {
     if (val === undefined || val === null || val === "NaN" || Number.isNaN(Number(val))) {
-      return "Data Terbatas";
+      return "N/A";
+    }
+    if (val === 0 && suffix === "°C") {
+      return "Offline"; // Di Lampung mustahil suhu 0°C, berarti sensor backend gagal
     }
     return `${val}${suffix}`;
   };
@@ -341,11 +347,11 @@ export default function Home() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-20 font-poppins`}>
+      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans`}>
         
         <style dangerouslySetInnerHTML={{__html: `
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-          .font-poppins { font-family: 'Poppins', sans-serif; }
+          * { font-family: 'Poppins', sans-serif; }
           .leaflet-top { top: 90px !important; z-index: 1000 !important; }
           .dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         `}} />
@@ -371,7 +377,7 @@ export default function Home() {
           </div>
         </nav>
 
-        <div className="pt-24 md:pt-32 px-4 md:px-8 max-w-7xl mx-auto space-y-6 md:space-y-8">
+        <div className="pt-24 md:pt-32 px-4 md:px-8 max-w-7xl mx-auto space-y-6 md:space-y-8 relative z-10">
           
           {error && (
             <div className="bg-red-100 dark:bg-rose-500/10 border border-red-200 dark:border-rose-500/20 text-red-600 dark:text-rose-400 px-5 py-4 rounded-2xl flex items-center gap-3 font-medium text-sm md:text-base animate-in fade-in shadow-sm">
@@ -471,12 +477,12 @@ export default function Home() {
                       { icon: Waves, label: "Ombak", val: formatData(hasil.detail_cuaca?.tinggi_gelombang_meter, " m") },
                       { icon: Sunrise, label: "Sunrise", val: formatData(hasil.detail_cuaca?.sunrise) },
                       { icon: Sunset, label: "Sunset", val: formatData(hasil.detail_cuaca?.sunset) },
-                      { icon: Sun, label: "UV", val: `Index ${formatData(hasil.detail_cuaca?.uv_index)}` },
+                      { icon: Sun, label: "UV Index", val: formatData(hasil.detail_cuaca?.uv_index) },
                     ].map((x, i) => (
                       <div key={i} className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center shadow-sm">
                         <x.icon size={24} className="text-slate-500 dark:text-slate-400 mb-3" />
                         <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{x.label}</span>
-                        <span className={`text-lg font-black ${x.val.includes('Terbatas') ? "text-slate-400 text-xs md:text-sm" : "text-slate-800 dark:text-slate-100 md:text-2xl"}`}>{x.val}</span>
+                        <span className={`text-lg font-black ${x.val === "N/A" || x.val === "Offline" ? "text-slate-400 text-sm md:text-base" : "text-slate-800 dark:text-slate-100 md:text-2xl"}`}>{x.val}</span>
                       </div>
                     ))}
                   </div>
