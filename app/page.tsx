@@ -10,14 +10,75 @@ import {
   BotMessageSquare, Moon
 } from "lucide-react";
 
-// Fallback komponen MapPicker untuk preview
-const MapPicker = ({ position, setPosition, daftarPantai }: any) => (
-  <div className="h-full w-full bg-slate-100 dark:bg-slate-800 animate-pulse flex flex-col items-center justify-center rounded-3xl border border-slate-200 dark:border-slate-700">
-    <MapIcon size={48} className="text-blue-500/40 animate-bounce mb-2" />
-    <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Peta Satelit</span>
-    <span className="text-[10px] font-mono text-slate-500 mt-2">{position?.lat?.toFixed(4)}, {position?.lng?.toFixed(4)}</span>
-  </div>
-);
+// ==========================================
+// NATIVE MAP COMPONENT (Bebas Error Next.js SSR)
+// ==========================================
+const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstance = useRef<any>(null);
+  const markerInstance = useRef<any>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const initMap = () => {
+      const L = (window as any).L;
+      if (!L || !mapRef.current) return;
+
+      if (!mapInstance.current) {
+        // Inisialisasi Peta Pertama Kali
+        mapInstance.current = L.map(mapRef.current).setView([position.lat, position.lng], 11);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap",
+        }).addTo(mapInstance.current);
+
+        const customIcon = L.icon({
+          iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+          shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+        });
+
+        markerInstance.current = L.marker([position.lat, position.lng], { icon: customIcon }).addTo(mapInstance.current);
+
+        mapInstance.current.on("click", (e: any) => {
+          setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
+        });
+
+        // Menambahkan Pin Pantai Lainnya
+        daftarPantai.forEach((p: any) => {
+          if (p.lat && p.lng) {
+            L.marker([p.lat, p.lng], { icon: customIcon, opacity: 0.6 })
+              .addTo(mapInstance.current)
+              .bindPopup(`<b>${p.nama}</b>`);
+          }
+        });
+
+      } else {
+        // Update Posisi Peta
+        mapInstance.current.setView([position.lat, position.lng], 13);
+        markerInstance.current.setLatLng([position.lat, position.lng]);
+      }
+    };
+
+    // Load Leaflet dari CDN secara dinamis
+    if (!(window as any).L) {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(css);
+
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      script.onload = initMap;
+      document.head.appendChild(script);
+    } else {
+      initMap();
+    }
+  }, [position.lat, position.lng]);
+
+  return <div ref={mapRef} className="w-full h-full rounded-[2rem] z-0 shadow-inner" />;
+};
 
 const PANTAI_LAMPUNG = [
   { nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null },
@@ -92,7 +153,7 @@ const FloatingChatbot = () => {
     setIsTyping(true);
 
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -159,7 +220,8 @@ const FloatingChatbot = () => {
             onKeyDown={handleKeyDown}
             placeholder="Tanya info pantai..." 
             rows={1}
-            className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white text-sm px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-[100px] min-h-[44px] overflow-y-auto placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors"
+            className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white text-sm px-4 py-3 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 resize-none max-h-[100px] min-h-[44px] overflow-y-auto placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-colors font-poppins"
+            style={{ paddingBottom: '12px', paddingTop: '12px' }}
           />
           <button type="submit" disabled={!input.trim() || isTyping} className="bg-blue-600 text-white p-3 rounded-2xl hover:bg-blue-700 disabled:opacity-50 h-[44px] w-[44px] flex items-center justify-center shrink-0 shadow-md">
             <Send size={18} className="ml-1" />
@@ -249,6 +311,13 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const formatData = (val: any, suffix: string = "") => {
+    if (val === undefined || val === null || val === "NaN" || Number.isNaN(Number(val))) {
+      return "Data Terbatas";
+    }
+    return `${val}${suffix}`;
+  };
+
   const getSaran = (status: string) => {
     if (status === "Aman") return { 
       teks: "Kondisi laut sangat bersahabat. Nikmati liburan Anda!", 
@@ -272,11 +341,11 @@ export default function Home() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-20 font-sans">
+      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-20 font-poppins`}>
         
         <style dangerouslySetInnerHTML={{__html: `
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-          * { font-family: 'Poppins', sans-serif; }
+          .font-poppins { font-family: 'Poppins', sans-serif; }
           .leaflet-top { top: 90px !important; z-index: 1000 !important; }
           .dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         `}} />
@@ -287,7 +356,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="bg-blue-600 p-2 rounded-xl text-white shadow-md"><Waves size={20} /></div>
-              <span className="font-black text-xl md:text-2xl tracking-tight text-slate-900 dark:text-white">SmartBeach</span>
+              <span className="font-black text-xl md:text-2xl tracking-tight text-slate-900 dark:text-white uppercase">SmartBeach</span>
             </div>
             
             <div className="flex items-center gap-3 md:gap-5">
@@ -305,7 +374,7 @@ export default function Home() {
         <div className="pt-24 md:pt-32 px-4 md:px-8 max-w-7xl mx-auto space-y-6 md:space-y-8">
           
           {error && (
-            <div className="bg-red-50 dark:bg-rose-500/10 border border-red-200 dark:border-rose-500/20 text-red-600 dark:text-rose-400 px-5 py-4 rounded-2xl flex items-center gap-3 font-medium text-sm md:text-base animate-in fade-in shadow-sm">
+            <div className="bg-red-100 dark:bg-rose-500/10 border border-red-200 dark:border-rose-500/20 text-red-600 dark:text-rose-400 px-5 py-4 rounded-2xl flex items-center gap-3 font-medium text-sm md:text-base animate-in fade-in shadow-sm">
               <ShieldAlert size={20} className="shrink-0" /> {error}
             </div>
           )}
@@ -378,7 +447,7 @@ export default function Home() {
             <div className="lg:col-span-8 space-y-6 md:space-y-8 order-1 lg:order-2">
               <div className="w-full h-[350px] md:h-[450px] bg-slate-200 dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 relative z-0">
                 <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="animate-spin text-blue-500" size={40} /></div>}>
-                  <MapPicker position={position} setPosition={setPosition} daftarPantai={PANTAI_LAMPUNG.filter(p => p.nama !== "Daftar Pantai...")} />
+                  <NativeMapPicker position={position} setPosition={setPosition} daftarPantai={PANTAI_LAMPUNG.filter(p => p.nama !== "Daftar Pantai...")} />
                 </Suspense>
               </div>
 
@@ -397,17 +466,17 @@ export default function Home() {
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
                     {[
-                      { icon: ThermometerSun, label: "Suhu", val: `${hasil.detail_cuaca.suhu_saat_ini}°C` },
-                      { icon: Wind, label: "Angin", val: `${hasil.detail_cuaca.angin_maks_ms} m/s` },
-                      { icon: Waves, label: "Ombak", val: hasil.detail_cuaca.tinggi_gelombang_meter !== "N/A" ? `${hasil.detail_cuaca.tinggi_gelombang_meter}m` : "N/A" },
-                      { icon: Sunrise, label: "Sunrise", val: hasil.detail_cuaca.sunrise },
-                      { icon: Sunset, label: "Sunset", val: hasil.detail_cuaca.sunset },
-                      { icon: Sun, label: "UV", val: `Index ${hasil.detail_cuaca.uv_index}` },
+                      { icon: ThermometerSun, label: "Suhu", val: formatData(hasil.detail_cuaca?.suhu_saat_ini, "°C") },
+                      { icon: Wind, label: "Angin", val: formatData(hasil.detail_cuaca?.angin_maks_ms, " m/s") },
+                      { icon: Waves, label: "Ombak", val: formatData(hasil.detail_cuaca?.tinggi_gelombang_meter, " m") },
+                      { icon: Sunrise, label: "Sunrise", val: formatData(hasil.detail_cuaca?.sunrise) },
+                      { icon: Sunset, label: "Sunset", val: formatData(hasil.detail_cuaca?.sunset) },
+                      { icon: Sun, label: "UV", val: `Index ${formatData(hasil.detail_cuaca?.uv_index)}` },
                     ].map((x, i) => (
                       <div key={i} className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center shadow-sm">
                         <x.icon size={24} className="text-slate-500 dark:text-slate-400 mb-3" />
                         <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{x.label}</span>
-                        <span className="text-lg md:text-2xl font-black text-slate-800 dark:text-slate-100">{x.val}</span>
+                        <span className={`text-lg font-black ${x.val.includes('Terbatas') ? "text-slate-400 text-xs md:text-sm" : "text-slate-800 dark:text-slate-100 md:text-2xl"}`}>{x.val}</span>
                       </div>
                     ))}
                   </div>
@@ -447,8 +516,8 @@ export default function Home() {
                               <h3 className="font-bold text-sm md:text-base text-white mb-3 md:mb-4 pr-10 group-hover:text-blue-400 transition-colors">{p.nama}</h3>
                               <div className={`absolute top-5 right-5 w-3 h-3 rounded-full ${p.statusAI === 'Aman' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]' : 'bg-amber-500'}`}></div>
                               <div className="flex gap-5 md:gap-6 text-[10px] md:text-xs text-slate-400 font-medium">
-                                <span className="flex items-center gap-1.5"><Wind size={14}/> {p.cuaca.angin_ms} m/s</span>
-                                <span className="flex items-center gap-1.5"><Waves size={14}/> {p.cuaca.tinggi_gelombang_meter} m</span>
+                                <span className="flex items-center gap-1.5"><Wind size={14}/> {formatData(p.cuaca.angin_ms, "m/s")}</span>
+                                <span className="flex items-center gap-1.5"><Waves size={14}/> {formatData(p.cuaca.tinggi_gelombang_meter, "m")}</span>
                               </div>
                             </div>
                           ))}
