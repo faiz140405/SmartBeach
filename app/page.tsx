@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, Suspense } from "react";
+import { Poppins } from "next/font/google";
 import { 
   MapPin, Wind, ThermometerSun, Sun, Waves, 
   CheckCircle2, AlertTriangle, ShieldAlert, Ticket, Clock, 
@@ -9,6 +10,11 @@ import {
   ChevronDown, MessageCircle, X, Send, Bot, User,
   BotMessageSquare, Moon
 } from "lucide-react";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
 
 // ==========================================
 // NATIVE MAP COMPONENT (Bebas Error Next.js SSR)
@@ -26,7 +32,6 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
       if (!L || !mapRef.current) return;
 
       if (!mapInstance.current) {
-        // Inisialisasi Peta Pertama Kali
         mapInstance.current = L.map(mapRef.current).setView([position.lat, position.lng], 11);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "© OpenStreetMap",
@@ -45,7 +50,6 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
           setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
         });
 
-        // Menambahkan Pin Pantai Lainnya
         daftarPantai.forEach((p: any) => {
           if (p.lat && p.lng) {
             L.marker([p.lat, p.lng], { icon: customIcon, opacity: 0.6 })
@@ -55,13 +59,11 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
         });
 
       } else {
-        // Update Posisi Peta
         mapInstance.current.setView([position.lat, position.lng], 13);
         markerInstance.current.setLatLng([position.lat, position.lng]);
       }
     };
 
-    // Load Leaflet dari CDN secara dinamis
     if (!(window as any).L) {
       const css = document.createElement("link");
       css.rel = "stylesheet";
@@ -107,7 +109,7 @@ const PANTAI_LAMPUNG = [
 const GEMINI_API_KEY = "AIzaSyBACWToYsyaqS-Bj0BEiDyEk6LSdE-YbH0";
 
 // ==========================================
-// CHATBOT COMPONENT (MEMISAHKAN FIXED LAYOUT AGAR TIDAK BERTUMPUK)
+// CHATBOT COMPONENT 
 // ==========================================
 const FloatingChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -153,15 +155,16 @@ const FloatingChatbot = () => {
     setIsTyping(true);
 
     try {
-      // ✅ PERBAIKAN: Menggunakan format payload Gemini yang paling stabil
-      const systemPrompt = `Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah.\n\nPertanyaan: ${userText}`;
-      
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: "Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah." }]
+          },
           contents: [{ 
-            parts: [{ text: systemPrompt }] 
+            role: "user", 
+            parts: [{ text: userText }] 
           }] 
         })
       });
@@ -178,9 +181,8 @@ const FloatingChatbot = () => {
   };
 
   return (
-    <>
-      {/* Chat Window - Dipisah dari parent agar posisinya mutlak relatif terhadap layar */}
-      <div className={`fixed bottom-24 right-4 md:right-8 w-[calc(100vw-32px)] md:w-[380px] h-[65vh] md:h-[550px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right z-[99999] ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
+    <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[9999]">
+      <div className={`absolute bottom-20 right-0 w-[calc(100vw-32px)] md:w-[380px] h-[65vh] md:h-[550px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`}>
         
         <div className="bg-blue-600 p-4 flex items-center justify-between text-white shrink-0 shadow-sm z-10 relative">
           <div className="flex items-center gap-3">
@@ -229,13 +231,12 @@ const FloatingChatbot = () => {
         </form>
       </div>
 
-      {/* Toggle Button - Diposisikan absolut terhadap Window utama agar bebas tumpang tindih */}
-      <button onClick={() => setIsOpen(!isOpen)} className="fixed bottom-4 right-4 md:bottom-8 md:right-8 w-14 h-14 md:w-16 md:h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] text-white transition-transform hover:scale-105 active:scale-95 z-[100000]">
+      <button onClick={() => setIsOpen(!isOpen)} className="w-14 h-14 md:w-16 md:h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] text-white transition-transform hover:scale-105 active:scale-95 relative">
         {isOpen ? <X size={24} /> : <MessageCircle size={28} />}
         {!isOpen && <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full animate-ping"></span>}
         {!isOpen && <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full"></span>}
       </button>
-    </>
+    </div>
   );
 };
 
@@ -297,8 +298,7 @@ export default function Home() {
             hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
           }
         } catch (e) {}
-        // ✅ PERBAIKAN: Meningkatkan delay menjadi 800ms agar Satelit tidak memblokir dan mengembalikan nilai 0 (Rate Limit Open-Meteo)
-        await delay(800); 
+        await delay(400); 
       }
       let kandidat = hasilSemua.filter(p => p.statusAI === "Aman");
       if (kandidat.length === 0) kandidat = hasilSemua.filter(p => p.statusAI === "Waspada");
@@ -313,13 +313,18 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ✅ PERBAIKAN: Menangani angka 0 murni dari API (Jika suhu 0 di Lampung, dipastikan sensor error)
+  // ✅ PERBAIKAN LOGIKA DATA: Tidak lagi mem-parse nilai teks secara paksa menjadi angka
   const formatData = (val: any, suffix: string = "") => {
-    if (val === undefined || val === null || val === "NaN" || Number.isNaN(Number(val))) {
+    if (val === undefined || val === null || val === "NaN" || val === "N/A") {
       return "N/A";
     }
+    // Cek khusus jika tipe datanya number dan terdeteksi NaN
+    if (typeof val === 'number' && Number.isNaN(val)) {
+      return "N/A";
+    }
+    // Jika sensor mendeteksi suhu 0 murni di perairan Indonesia, berarti server gagal
     if (val === 0 && suffix === "°C") {
-      return "Offline"; // Di Lampung mustahil suhu 0°C, berarti sensor backend gagal
+      return "Offline"; 
     }
     return `${val}${suffix}`;
   };
@@ -347,11 +352,9 @@ export default function Home() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans`}>
+      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans ${poppins.className}`}>
         
         <style dangerouslySetInnerHTML={{__html: `
-          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-          * { font-family: 'Poppins', sans-serif; }
           .leaflet-top { top: 90px !important; z-index: 1000 !important; }
           .dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         `}} />
