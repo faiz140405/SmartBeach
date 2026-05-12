@@ -5,8 +5,8 @@ import { Poppins } from "next/font/google";
 import { 
   MapPin, Wind, ThermometerSun, Sun, Waves, 
   CheckCircle2, AlertTriangle, ShieldAlert, Ticket, Clock, 
-  CarFront, Info, Sunrise, Sunset, Camera, Loader2,
-  Sparkles, Trophy, Map as MapIcon, Radar, Activity, Navigation, 
+  Info, Sunrise, Sunset, Camera, Loader2,
+  Sparkles, Trophy, Map as MapIcon, Radar, Navigation, 
   ChevronDown, MessageCircle, X, Send, Bot, User,
   BotMessageSquare, Moon
 } from "lucide-react";
@@ -84,289 +84,27 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
 
 const PANTAI_LAMPUNG = [
   { nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null },
-
-  {
-    nama: "Pantai Mutun (Pesawaran)",
-    lat: -5.56195,
-    lng: 105.25055,
-    info: {
-      deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, sangat ramah anak.",
-      htm: "Rp 25.000 / Orang",
-      jam: "07:00 - 18:00 WIB",
-      akses: "Mudah, semua kendaraan.",
-      fasilitas: ["Pondokan", "Banana Boat", "Bilas"],
-      waktuTerbaik: "15:00 - 17:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Sari Ringgung (Pesawaran)",
-    lat: -5.57842,
-    lng: 105.26384,
-    info: {
-      deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.",
-      htm: "Rp 20.000 / Orang",
-      jam: "06:00 - 18:00 WIB",
-      akses: "Aspal mulus.",
-      fasilitas: ["Perahu", "Masjid Apung", "Kafe"],
-      waktuTerbaik: "08:00 - 11:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Klara (Pesawaran)",
-    lat: -5.59714,
-    lng: 105.22304,
-    info: {
-      deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.",
-      htm: "Rp 15.000 / Motor",
-      jam: "07:00 - 18:00 WIB",
-      akses: "Pinggir jalan raya.",
-      fasilitas: ["Gazebo", "Kano", "Kamar Mandi"],
-      waktuTerbaik: "10:00 - 14:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Dewi Mandapa (Pesawaran)",
-    lat: -5.60251,
-    lng: 105.24155,
-    info: {
-      deskripsi: "Wisata mangrove dengan jembatan kayu dan Pulau Cinta.",
-      htm: "Rp 15.000 / Orang",
-      jam: "08:00 - 18:00 WIB",
-      akses: "Aspal & tanah.",
-      fasilitas: ["Foto Mangrove", "Pulau Cinta", "Warung"],
-      waktuTerbaik: "16:00 - 18:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pulau Pahawang (Pesawaran)",
-    lat: -5.67281,
-    lng: 105.22013,
-    info: {
-      deskripsi: "Surga snorkeling dengan pemandangan taman nemo bawah laut.",
-      htm: "Tur mulai Rp 150rb",
-      jam: "07:00 - 17:00 WIB",
-      akses: "Perahu dari Ketapang.",
-      fasilitas: ["Snorkeling", "Homestay", "Makan"],
-      waktuTerbaik: "08:00 - 11:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Pasir Putih (Lampung Selatan)",
-    lat: -5.53321,
-    lng: 105.34032,
-    info: {
-      deskripsi: "Pantai legendaris dengan panorama laut lepas dan Pulau Condong.",
-      htm: "Rp 15.000 / Orang",
-      jam: "07:00 - 18:00 WIB",
-      akses: "Lintas Sumatera.",
-      fasilitas: ["Souvenir", "Perahu", "Bilas"],
-      waktuTerbaik: "15:30 - 17:30 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Sebalang (Lampung Selatan)",
-    lat: -5.51888,
-    lng: 105.34144,
-    info: {
-      deskripsi: "Pantai vibes Jimbaran Bali, dengan bean bag dan live music.",
-      htm: "Rp 20.000 / Orang",
-      jam: "10:00 - 22:00 WIB",
-      akses: "Area PLTU.",
-      fasilitas: ["Kafe", "Live Music", "Sunset"],
-      waktuTerbaik: "16:30 - 19:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Marina (Lampung Selatan)",
-    lat: -5.73562,
-    lng: 105.58985,
-    info: {
-      deskripsi: "Pantai berkarang dengan hantaman ombak besar khas Samudra Hindia.",
-      htm: "Rp 30.000 / Orang",
-      jam: "07:00 - 18:00 WIB",
-      akses: "Aspal mulus.",
-      fasilitas: ["Kafe", "Prewedding", "Mushola"],
-      waktuTerbaik: "16:00 - 18:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Minang Rua (Lampung Selatan)",
-    lat: -5.87102,
-    lng: 105.74833,
-    info: {
-      deskripsi: "Paket komplit: laut, goa karang, air terjun, Green Canyon.",
-      htm: "Rp 10.000 / Orang",
-      jam: "07:00 - 18:00 WIB",
-      akses: "Turunan curam.",
-      fasilitas: ["Guide", "Jumping", "Camping"],
-      waktuTerbaik: "08:00 - 12:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Ketang (Lampung Selatan)",
-    lat: -5.71715,
-    lng: 105.59472,
-    info: {
-      deskripsi: "Pantai karang hitam eksotis sisa letusan Krakatau.",
-      htm: "Gratis - 5rb",
-      jam: "24 Jam",
-      akses: "Pinggir jalan.",
-      fasilitas: ["Warung", "Parkir", "Foto"],
-      waktuTerbaik: "16:00 - 17:30 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Batu Lapis (Lampung Selatan)",
-    lat: -5.89745,
-    lng: 105.75331,
-    info: {
-      deskripsi: "Karang laut berbentuk berlapis-lapis unik dan fotogenik.",
-      htm: "Rp 15.000 / Orang",
-      jam: "07:00 - 17:00 WIB",
-      akses: "Trekking santai.",
-      fasilitas: ["Spot Foto", "Warung", "Parkir"],
-      waktuTerbaik: "15:00 - 17:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Embe (Lamsel)",
-    lat: -5.58164,
-    lng: 105.47462,
-    info: {
-      deskripsi: "Resort modern dengan garis pantai panjang dan bersih.",
-      htm: "Rp 35.000 / Orang",
-      jam: "08:00 - 18:00 WIB",
-      akses: "Sangat mudah.",
-      fasilitas: ["Resort", "Pool", "Resto"],
-      waktuTerbaik: "Pagi/Sore"
-    }
-  },
-
-  {
-    nama: "Pantai Duta Wisata (Bandar Lampung)",
-    lat: -5.46732,
-    lng: 105.25361,
-    info: {
-      deskripsi: "Tepat di pinggir kota, menawarkan pemandangan Teluk Lampung.",
-      htm: "Rp 15.000 / Orang",
-      jam: "08:00 - 18:00 WIB",
-      akses: "Bisa Ojek Online.",
-      fasilitas: ["Sewa Ban", "Pondok", "Warung"],
-      waktuTerbaik: "16:00 - 18:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Tanjung Setia (Pesisir Barat)",
-    lat: -5.30441,
-    lng: 103.99612,
-    info: {
-      deskripsi: "Surga peselancar dunia dengan ombak tertinggi Mei-Oktober.",
-      htm: "Rp 10.000 / Orang",
-      jam: "24 Jam",
-      akses: "Jalan Lintas Barat.",
-      fasilitas: ["Resort", "Surf Rental", "Kafe"],
-      waktuTerbaik: "Pagi Hari"
-    }
-  },
-
-  {
-    nama: "Pantai Labuhan Jukung (Pesisir Barat)",
-    lat: -5.18742,
-    lng: 103.92983,
-    info: {
-      deskripsi: "Pusat keramaian Krui, lokasi festival selancar internasional.",
-      htm: "Rp 5.000 / Motor",
-      jam: "24 Jam",
-      akses: "Pusat Kota Krui.",
-      fasilitas: ["Alun-alun", "Taman", "Seafood"],
-      waktuTerbaik: "16:30 - 18:30 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Walur (Pesisir Barat)",
-    lat: -5.21154,
-    lng: 103.92421,
-    info: {
-      deskripsi: "Pasir putih bersih dengan pemandangan mercusuar.",
-      htm: "Gratis",
-      jam: "24 Jam",
-      akses: "Bisa kendaraan.",
-      fasilitas: ["Mancing", "Piknik", "Lodging"],
-      waktuTerbaik: "Pagi Hari"
-    }
-  },
-
-  {
-    nama: "Pantai Mandiri (Pesisir Barat)",
-    lat: -5.26622,
-    lng: 103.97452,
-    info: {
-      deskripsi: "Pasir hitam eksotis membentang lurus tanpa karang.",
-      htm: "Gratis",
-      jam: "24 Jam",
-      akses: "Pinggir jalan raya.",
-      fasilitas: ["Sunset Spot", "Warung", "Rest Area"],
-      waktuTerbaik: "17:00 - 18:30 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Gigi Hiu (Tanggamus)",
-    lat: -5.75161,
-    lng: 105.05142,
-    info: {
-      deskripsi: "Gugusan batu karang tajam bak gigi hiu yang estetik.",
-      htm: "Rp 20.000 / Orang",
-      jam: "06:00 - 17:00 WIB",
-      akses: "Tantangan tinggi.",
-      fasilitas: ["Parkir", "Spot Foto"],
-      waktuTerbaik: "Sore Hari"
-    }
-  },
-
-  {
-    nama: "Pantai Teluk Kiluan (Tanggamus)",
-    lat: -5.77942,
-    lng: 105.10521,
-    info: {
-      deskripsi: "Habitat lumba-lumba liar dan memiliki lagun karang bening.",
-      htm: "Rp 15.000",
-      jam: "24 Jam",
-      akses: "Jalan Berbukit.",
-      fasilitas: ["Jukung", "Homestay", "Guide"],
-      waktuTerbaik: "06:00 - 08:00 WIB"
-    }
-  },
-
-  {
-    nama: "Pantai Batu Karang (Tanggamus)",
-    lat: -5.7005,
-    lng: 105.0849,
-    info: {
-      deskripsi: "Pantai tersembunyi dengan bebatuan besar pelindung ombak.",
-      htm: "Rp 10.000 / Orang",
-      jam: "08:00 - 17:00 WIB",
-      akses: "Jalan bebatuan.",
-      fasilitas: ["Mancing", "Relaksasi"],
-      waktuTerbaik: "Pagi Hari"
-    }
-  }
+  { nama: "Pantai Mutun (Pesawaran)", lat: -5.56195, lng: 105.25055, info: { deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, sangat ramah anak.", htm: "Rp 25.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Mudah, semua kendaraan.", fasilitas: ["Pondokan", "Banana Boat", "Bilas"], waktuTerbaik: "15:00 - 17:00 WIB" } },
+  { nama: "Pantai Sari Ringgung (Pesawaran)", lat: -5.57842, lng: 105.26384, info: { deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.", htm: "Rp 20.000 / Orang", jam: "06:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Perahu", "Masjid Apung", "Kafe"], waktuTerbaik: "08:00 - 11:00 WIB" } },
+  { nama: "Pantai Klara (Pesawaran)", lat: -5.59714, lng: 105.22304, info: { deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.", htm: "Rp 15.000 / Motor", jam: "07:00 - 18:00 WIB", akses: "Pinggir jalan raya.", fasilitas: ["Gazebo", "Kano", "Kamar Mandi"], waktuTerbaik: "10:00 - 14:00 WIB" } },
+  { nama: "Pantai Dewi Mandapa (Pesawaran)", lat: -5.60251, lng: 105.24155, info: { deskripsi: "Wisata mangrove dengan jembatan kayu dan Pulau Cinta.", htm: "Rp 15.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Aspal & tanah.", fasilitas: ["Foto Mangrove", "Pulau Cinta", "Warung"], waktuTerbaik: "16:00 - 18:00 WIB" } },
+  { nama: "Pulau Pahawang (Pesawaran)", lat: -5.67281, lng: 105.22013, info: { deskripsi: "Surga snorkeling dengan pemandangan taman nemo bawah laut.", htm: "Tur mulai Rp 150rb", jam: "07:00 - 17:00 WIB", akses: "Perahu dari Ketapang.", fasilitas: ["Snorkeling", "Homestay", "Makan"], waktuTerbaik: "08:00 - 11:00 WIB" } },
+  { nama: "Pantai Pasir Putih (Lampung Selatan)", lat: -5.53321, lng: 105.34032, info: { deskripsi: "Pantai legendaris dengan panorama laut lepas dan Pulau Condong.", htm: "Rp 15.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Lintas Sumatera.", fasilitas: ["Souvenir", "Perahu", "Bilas"], waktuTerbaik: "15:30 - 17:30 WIB" } },
+  { nama: "Pantai Sebalang (Lampung Selatan)", lat: -5.51888, lng: 105.34144, info: { deskripsi: "Pantai vibes Jimbaran Bali, dengan bean bag dan live music.", htm: "Rp 20.000 / Orang", jam: "10:00 - 22:00 WIB", akses: "Area PLTU.", fasilitas: ["Kafe", "Live Music", "Sunset"], waktuTerbaik: "16:30 - 19:00 WIB" } },
+  { nama: "Pantai Marina (Lampung Selatan)", lat: -5.73562, lng: 105.58985, info: { deskripsi: "Pantai berkarang dengan hantaman ombak besar khas Samudra Hindia.", htm: "Rp 30.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Kafe", "Prewedding", "Mushola"], waktuTerbaik: "16:00 - 18:00 WIB" } },
+  { nama: "Pantai Minang Rua (Lampung Selatan)", lat: -5.87102, lng: 105.74833, info: { deskripsi: "Paket komplit: laut, goa karang, air terjun, Green Canyon.", htm: "Rp 10.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Turunan curam.", fasilitas: ["Guide", "Jumping", "Camping"], waktuTerbaik: "08:00 - 12:00 WIB" } },
+  { nama: "Pantai Ketang (Lampung Selatan)", lat: -5.71715, lng: 105.59472, info: { deskripsi: "Pantai karang hitam eksotis sisa letusan Krakatau.", htm: "Gratis - 5rb", jam: "24 Jam", akses: "Pinggir jalan.", fasilitas: ["Warung", "Parkir", "Foto"], waktuTerbaik: "16:00 - 17:30 WIB" } },
+  { nama: "Pantai Batu Lapis (Lampung Selatan)", lat: -5.89745, lng: 105.75331, info: { deskripsi: "Karang laut berbentuk berlapis-lapis unik dan fotogenik.", htm: "Rp 15.000 / Orang", jam: "07:00 - 17:00 WIB", akses: "Trekking santai.", fasilitas: ["Spot Foto", "Warung", "Parkir"], waktuTerbaik: "15:00 - 17:00 WIB" } },
+  { nama: "Pantai Embe (Lamsel)", lat: -5.58164, lng: 105.47462, info: { deskripsi: "Resort modern dengan garis pantai panjang dan bersih.", htm: "Rp 35.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Sangat mudah.", fasilitas: ["Resort", "Pool", "Resto"], waktuTerbaik: "Pagi/Sore" } },
+  { nama: "Pantai Duta Wisata (Bandar Lampung)", lat: -5.46732, lng: 105.25361, info: { deskripsi: "Tepat di pinggir kota, menawarkan pemandangan Teluk Lampung.", htm: "Rp 15.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Bisa Ojek Online.", fasilitas: ["Sewa Ban", "Pondok", "Warung"], waktuTerbaik: "16:00 - 18:00 WIB" } },
+  { nama: "Pantai Tanjung Setia (Pesisir Barat)", lat: -5.30441, lng: 103.99612, info: { deskripsi: "Surga peselancar dunia dengan ombak tertinggi Mei-Oktober.", htm: "Rp 10.000 / Orang", jam: "24 Jam", akses: "Jalan Lintas Barat.", fasilitas: ["Resort", "Surf Rental", "Kafe"], waktuTerbaik: "Pagi Hari" } },
+  { nama: "Pantai Labuhan Jukung (Pesisir Barat)", lat: -5.18742, lng: 103.92983, info: { deskripsi: "Pusat keramaian Krui, lokasi festival selancar internasional.", htm: "Rp 5.000 / Motor", jam: "24 Jam", akses: "Pusat Kota Krui.", fasilitas: ["Alun-alun", "Taman", "Seafood"], waktuTerbaik: "16:30 - 18:30 WIB" } },
+  { nama: "Pantai Walur (Pesisir Barat)", lat: -5.21154, lng: 103.92421, info: { deskripsi: "Pasir putih bersih dengan pemandangan mercusuar.", htm: "Gratis", jam: "24 Jam", akses: "Bisa kendaraan.", fasilitas: ["Mancing", "Piknik", "Lodging"], waktuTerbaik: "Pagi Hari" } },
+  { nama: "Pantai Mandiri (Pesisir Barat)", lat: -5.26622, lng: 103.97452, info: { deskripsi: "Pasir hitam eksotis membentang lurus tanpa karang.", htm: "Gratis", jam: "24 Jam", akses: "Pinggir jalan raya.", fasilitas: ["Sunset Spot", "Warung", "Rest Area"], waktuTerbaik: "17:00 - 18:30 WIB" } },
+  { nama: "Pantai Gigi Hiu (Tanggamus)", lat: -5.75161, lng: 105.05142, info: { deskripsi: "Gugusan batu karang tajam bak gigi hiu yang estetik.", htm: "Rp 20.000 / Orang", jam: "06:00 - 17:00 WIB", akses: "Tantangan tinggi.", fasilitas: ["Parkir", "Spot Foto"], waktuTerbaik: "Sore Hari" } },
+  { nama: "Pantai Teluk Kiluan (Tanggamus)", lat: -5.77942, lng: 105.10521, info: { deskripsi: "Habitat lumba-lumba liar dan memiliki lagun karang bening.", htm: "Rp 15.000", jam: "24 Jam", akses: "Jalan Berbukit.", fasilitas: ["Jukung", "Homestay", "Guide"], waktuTerbaik: "06:00 - 08:00 WIB" } },
+  { nama: "Pantai Batu Karang (Tanggamus)", lat: -5.7005, lng: 105.0849, info: { deskripsi: "Pantai tersembunyi dengan bebatuan besar pelindung ombak.", htm: "Rp 10.000 / Orang", jam: "08:00 - 17:00 WIB", akses: "Jalan bebatuan.", fasilitas: ["Mancing", "Relaksasi"], waktuTerbaik: "Pagi Hari" } }
 ];
-
-const GEMINI_API_KEY = "AIzaSyBACWToYsyaqS-Bj0BEiDyEk6LSdE-YbH0";
 
 // ==========================================
 // CHATBOT COMPONENT 
@@ -380,6 +118,9 @@ const FloatingChatbot = () => {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Mengambil API Key yang disembunyikan di .env.local
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -412,19 +153,22 @@ const FloatingChatbot = () => {
       textareaRef.current.style.height = "auto";
     }
 
+    if (!apiKey) {
+      setMessages(prev => [...prev, { role: "bot", text: "Maaf, API Key belum dikonfigurasi. Pastikan file `.env.local` sudah dibuat." }]);
+      return;
+    }
+
     setIsTyping(true);
 
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`, {
+      const systemPrompt = `Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah.\n\nPertanyaan: ${userText}`;
+      
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: "Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah." }]
-          },
           contents: [{ 
-            role: "user", 
-            parts: [{ text: userText }] 
+            parts: [{ text: systemPrompt }] 
           }] 
         })
       });
@@ -434,7 +178,7 @@ const FloatingChatbot = () => {
       const botReply = data.candidates[0].content.parts[0].text;
       setMessages(prev => [...prev, { role: "bot", text: botReply }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: "bot", text: "Maaf, sistem satelit saya sedang sibuk. Mohon coba beberapa saat lagi ya! 📡" }]);
+      setMessages(prev => [...prev, { role: "bot", text: "Maaf, sistem satelit saya sedang sibuk (Rate Limit). Mohon coba beberapa saat lagi ya! 📡" }]);
     } finally {
       setIsTyping(false);
     }
@@ -547,6 +291,7 @@ export default function Home() {
     try {
       const daftar = PANTAI_LAMPUNG.filter(p => p.nama !== "Daftar Pantai...");
       const hasilSemua = [];
+      
       for (const p of daftar) {
         try {
           const res = await fetch("https://faiz140405-backend-smartbeach.hf.space/predict-by-location", {
@@ -558,13 +303,22 @@ export default function Home() {
             hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
           }
         } catch (e) {}
-        await delay(400); 
+        await delay(600); // Menjaga jeda agar tidak terlalu membebani server
       }
+
+      // ✅ LOGIKA DIPERBAIKI: Jika satelit tidak mengirimkan data apa-apa (Rate Limit), batalkan proses.
+      if (hasilSemua.length === 0) {
+        throw new Error("Server membatasi akses beruntun (Rate Limit API). Mohon coba beberapa jam lagi.");
+      }
+
       let kandidat = hasilSemua.filter(p => p.statusAI === "Aman");
       if (kandidat.length === 0) kandidat = hasilSemua.filter(p => p.statusAI === "Waspada");
       kandidat.sort((a, b) => a.cuaca.angin_ms - b.cuaca.angin_ms);
       setRekomendasiTerbaik(kandidat);
-    } catch (err) { setError("Deep Scan terhenti karena masalah jaringan."); } 
+
+    } catch (err: any) { 
+      setError(err.message || "Deep Scan terhenti karena masalah jaringan."); 
+    } 
     finally { setIsScanningAll(false); }
   };
 
@@ -573,16 +327,13 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ✅ PERBAIKAN LOGIKA DATA: Tidak lagi mem-parse nilai teks secara paksa menjadi angka
   const formatData = (val: any, suffix: string = "") => {
     if (val === undefined || val === null || val === "NaN" || val === "N/A") {
       return "N/A";
     }
-    // Cek khusus jika tipe datanya number dan terdeteksi NaN
     if (typeof val === 'number' && Number.isNaN(val)) {
       return "N/A";
     }
-    // Jika sensor mendeteksi suhu 0 murni di perairan Indonesia, berarti server gagal
     if (val === 0 && suffix === "°C") {
       return "Offline"; 
     }
@@ -740,7 +491,7 @@ export default function Home() {
                       { icon: Waves, label: "Ombak", val: formatData(hasil.detail_cuaca?.tinggi_gelombang_meter, " m") },
                       { icon: Sunrise, label: "Sunrise", val: formatData(hasil.detail_cuaca?.sunrise) },
                       { icon: Sunset, label: "Sunset", val: formatData(hasil.detail_cuaca?.sunset) },
-                      { icon: Sun, label: "UV Index", val: formatData(hasil.detail_cuaca?.uv_index) },
+                      { icon: Sun, label: "UV", val: `Index ${formatData(hasil.detail_cuaca?.uv_index)}` },
                     ].map((x, i) => (
                       <div key={i} className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center shadow-sm">
                         <x.icon size={24} className="text-slate-500 dark:text-slate-400 mb-3" />
@@ -764,7 +515,7 @@ export default function Home() {
                 </div>
                 <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">AI Satelit <br/><span className="text-blue-500">Deep Scan.</span></h2>
                 <p className="text-sm md:text-base text-slate-400 font-medium leading-relaxed max-w-sm mx-auto lg:mx-0">
-                  Sistem kami memindai 20 titik pantai di Provinsi Lampung secara serentak untuk mencarikan Anda lokasi wisata paling aman hari ini.
+                  Sistem kami memindai titik pantai di Provinsi Lampung secara serentak untuk mencarikan Anda lokasi wisata paling aman hari ini.
                 </p>
                 <button onClick={handleDeepScan} disabled={isScanningAll} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 text-sm md:text-base shadow-xl mt-4 active:scale-95">
                   {isScanningAll ? <Loader2 className="animate-spin" size={20} /> : <Radar size={20} />} 
