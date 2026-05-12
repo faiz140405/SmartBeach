@@ -83,8 +83,34 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
 };
 
 const PANTAI_LAMPUNG = [
-  }
-  nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null
+  { nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null },
+
+  {
+    nama: "Pantai Mutun (Pesawaran)",
+    lat: -5.5619,
+    lng: 105.2508,
+    info: {
+      deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, sangat ramah anak.",
+      htm: "Rp 25.000 / Orang",
+      jam: "07:00 - 18:00 WIB",
+      akses: "Mudah, semua kendaraan.",
+      fasilitas: ["Pondokan", "Banana Boat", "Bilas"],
+      waktuTerbaik: "15:00 - 17:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Sari Ringgung (Pesawaran)",
+    lat: -5.5797,
+    lng: 105.2615,
+    info: {
+      deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.",
+      htm: "Rp 20.000 / Orang",
+      jam: "06:00 - 18:00 WIB",
+      akses: "Aspal mulus.",
+      fasilitas: ["Perahu", "Masjid Apung", "Kafe"],
+      waktuTerbaik: "08:00 - 11:00 WIB"
+    }
   },
 
   {
@@ -92,7 +118,7 @@ const PANTAI_LAMPUNG = [
     lat: -5.5962,
     lng: 105.2231,
     info: {
-      deskripsi: "Singkatan dari Kelapa Rapat, perairan dangkal dan teduh.",
+      deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.",
       htm: "Rp 15.000 / Motor",
       jam: "07:00 - 18:00 WIB",
       akses: "Pinggir jalan raya.",
@@ -140,6 +166,202 @@ const PANTAI_LAMPUNG = [
       akses: "Lintas Sumatera.",
       fasilitas: ["Souvenir", "Perahu", "Bilas"],
       waktuTerbaik: "15:30 - 17:30 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Sebalang (Lampung Selatan)",
+    lat: -5.5208,
+    lng: 105.3905,
+    info: {
+      deskripsi: "Pantai vibes Jimbaran Bali, dengan bean bag dan live music.",
+      htm: "Rp 20.000 / Orang",
+      jam: "10:00 - 22:00 WIB",
+      akses: "Area PLTU.",
+      fasilitas: ["Kafe", "Live Music", "Sunset"],
+      waktuTerbaik: "16:30 - 19:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Marina (Lampung Selatan)",
+    lat: -5.7428,
+    lng: 105.6188,
+    info: {
+      deskripsi: "Pantai berkarang dengan hantaman ombak besar khas Samudra Hindia.",
+      htm: "Rp 30.000 / Orang",
+      jam: "07:00 - 18:00 WIB",
+      akses: "Aspal mulus.",
+      fasilitas: ["Kafe", "Prewedding", "Mushola"],
+      waktuTerbaik: "16:00 - 18:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Minang Rua (Lampung Selatan)",
+    lat: -5.8672,
+    lng: 105.7362,
+    info: {
+      deskripsi: "Paket komplit: laut, goa karang, air terjun, Green Canyon.",
+      htm: "Rp 10.000 / Orang",
+      jam: "07:00 - 18:00 WIB",
+      akses: "Turunan curam.",
+      fasilitas: ["Guide", "Jumping", "Camping"],
+      waktuTerbaik: "08:00 - 12:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Ketang (Lampung Selatan)",
+    lat: -5.7171,
+    lng: 105.5989,
+    info: {
+      deskripsi: "Pantai karang hitam eksotis sisa letusan Krakatau.",
+      htm: "Gratis - 5rb",
+      jam: "24 Jam",
+      akses: "Pinggir jalan.",
+      fasilitas: ["Warung", "Parkir", "Foto"],
+      waktuTerbaik: "16:00 - 17:30 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Batu Lapis (Lampung Selatan)",
+    lat: -5.9108,
+    lng: 105.7489,
+    info: {
+      deskripsi: "Karang laut berbentuk berlapis-lapis unik dan fotogenik.",
+      htm: "Rp 15.000 / Orang",
+      jam: "07:00 - 17:00 WIB",
+      akses: "Trekking santai.",
+      fasilitas: ["Spot Foto", "Warung", "Parkir"],
+      waktuTerbaik: "15:00 - 17:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Embe (Lamsel)",
+    lat: -5.5310,
+    lng: 105.3731,
+    info: {
+      deskripsi: "Resort modern dengan garis pantai panjang dan bersih.",
+      htm: "Rp 35.000 / Orang",
+      jam: "08:00 - 18:00 WIB",
+      akses: "Sangat mudah.",
+      fasilitas: ["Resort", "Pool", "Resto"],
+      waktuTerbaik: "Pagi/Sore"
+    }
+  },
+
+  {
+    nama: "Pantai Duta Wisata (Bandar Lampung)",
+    lat: -5.4484,
+    lng: 105.2426,
+    info: {
+      deskripsi: "Tepat di pinggir kota, menawarkan pemandangan Teluk Lampung.",
+      htm: "Rp 15.000 / Orang",
+      jam: "08:00 - 18:00 WIB",
+      akses: "Bisa Ojek Online.",
+      fasilitas: ["Sewa Ban", "Pondok", "Warung"],
+      waktuTerbaik: "16:00 - 18:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Tanjung Setia (Pesisir Barat)",
+    lat: -5.2677,
+    lng: 103.9310,
+    info: {
+      deskripsi: "Surga peselancar dunia dengan ombak tertinggi Mei-Oktober.",
+      htm: "Rp 10.000 / Orang",
+      jam: "24 Jam",
+      akses: "Jalan Lintas Barat.",
+      fasilitas: ["Resort", "Surf Rental", "Kafe"],
+      waktuTerbaik: "Pagi Hari"
+    }
+  },
+
+  {
+    nama: "Pantai Labuhan Jukung (Pesisir Barat)",
+    lat: -5.1934,
+    lng: 103.9391,
+    info: {
+      deskripsi: "Pusat keramaian Krui, lokasi festival selancar internasional.",
+      htm: "Rp 5.000 / Motor",
+      jam: "24 Jam",
+      akses: "Pusat Kota Krui.",
+      fasilitas: ["Alun-alun", "Taman", "Seafood"],
+      waktuTerbaik: "16:30 - 18:30 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Walur (Pesisir Barat)",
+    lat: -5.2360,
+    lng: 103.9412,
+    info: {
+      deskripsi: "Pasir putih bersih dengan pemandangan mercusuar.",
+      htm: "Gratis",
+      jam: "24 Jam",
+      akses: "Bisa kendaraan.",
+      fasilitas: ["Mancing", "Piknik", "Lodging"],
+      waktuTerbaik: "Pagi Hari"
+    }
+  },
+
+  {
+    nama: "Pantai Mandiri (Pesisir Barat)",
+    lat: -5.2483,
+    lng: 103.9428,
+    info: {
+      deskripsi: "Pasir hitam eksotis membentang lurus tanpa karang.",
+      htm: "Gratis",
+      jam: "24 Jam",
+      akses: "Pinggir jalan raya.",
+      fasilitas: ["Sunset Spot", "Warung", "Rest Area"],
+      waktuTerbaik: "17:00 - 18:30 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Gigi Hiu (Tanggamus)",
+    lat: -5.7558,
+    lng: 105.0892,
+    info: {
+      deskripsi: "Gugusan batu karang tajam bak gigi hiu yang estetik.",
+      htm: "Rp 20.000 / Orang",
+      jam: "06:00 - 17:00 WIB",
+      akses: "Tantangan tinggi.",
+      fasilitas: ["Parkir", "Spot Foto"],
+      waktuTerbaik: "Sore Hari"
+    }
+  },
+
+  {
+    nama: "Pantai Teluk Kiluan (Tanggamus)",
+    lat: -5.7812,
+    lng: 105.1010,
+    info: {
+      deskripsi: "Habitat lumba-lumba liar dan memiliki lagun karang bening.",
+      htm: "Rp 15.000",
+      jam: "24 Jam",
+      akses: "Jalan Berbukit.",
+      fasilitas: ["Jukung", "Homestay", "Guide"],
+      waktuTerbaik: "06:00 - 08:00 WIB"
+    }
+  },
+
+  {
+    nama: "Pantai Batu Karang (Tanggamus)",
+    lat: -5.7005,
+    lng: 105.0849,
+    info: {
+      deskripsi: "Pantai tersembunyi dengan bebatuan besar pelindung ombak.",
+      htm: "Rp 10.000 / Orang",
+      jam: "08:00 - 17:00 WIB",
+      akses: "Jalan bebatuan.",
+      fasilitas: ["Mancing", "Relaksasi"],
+      waktuTerbaik: "Pagi Hari"
     }
   }
 ];
