@@ -107,9 +107,10 @@ const PANTAI_LAMPUNG = [
 ];
 
 // ==========================================
-// CHATBOT COMPONENT 
+// CHATBOT COMPONENT TERINTEGRASI DENGAN DASHBOARD
 // ==========================================
-const FloatingChatbot = () => {
+// ✅ Menambahkan props agar Chatbot tau pantai apa yang sedang dilihat dan bagaimana cuacanya
+const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline }: { selectedPantai: string, hasil: any, isServerOffline: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -119,7 +120,6 @@ const FloatingChatbot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Mengambil API Key dari Environment Variable
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
 
   useEffect(() => {
@@ -160,8 +160,32 @@ const FloatingChatbot = () => {
 
     setIsTyping(true);
 
+    // ✅ INJEKSI DATA REAL-TIME KE OTAK AI
+    let dataRealTime = "User belum melakukan pemindaian (Pindai Keamanan Laut).";
+    
+    if (isServerOffline) {
+      dataRealTime = "Satelit cuaca sedang offline/gangguan. Tidak ada data yang bisa diberikan.";
+    } else if (hasil) {
+      dataRealTime = `
+      - Pantai yang sedang dianalisis: ${selectedPantai}
+      - Status Keamanan Laut Saat Ini: ${hasil.rekomendasi}
+      - Suhu Udara: ${hasil.detail_cuaca?.suhu_saat_ini}°C
+      - Kecepatan Angin: ${hasil.detail_cuaca?.angin_maks_ms} m/s
+      - Tinggi Ombak: ${hasil.detail_cuaca?.tinggi_gelombang_meter} m
+      - Indeks UV: ${hasil.detail_cuaca?.uv_index}
+      `;
+    }
+
     try {
-      const systemPrompt = `Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah.\n\nPertanyaan: ${userText}`;
+      const systemPrompt = `Kamu adalah 'Samba AI', asisten cerdas pariwisata pantai Lampung. 
+Tugasmu: Menjawab pertanyaan user dengan ramah dan ringkas. 
+
+PENTING! Ini adalah DATA SATELIT REAL-TIME yang sedang tampil di layar user saat ini:
+${dataRealTime}
+
+Jika user bertanya tentang cuaca, aman/tidaknya pantai, atau kondisi saat ini, JAWAB BERDASARKAN DATA DI ATAS. Jika statusnya Tidak Aman/Waspada, peringatkan user. Jika data belum dipindai, suruh user menekan tombol "Pindai Keamanan Laut".
+
+Pertanyaan User: ${userText}`;
       
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
         method: "POST", 
@@ -178,7 +202,7 @@ const FloatingChatbot = () => {
       const botReply = data.candidates[0].content.parts[0].text;
       setMessages(prev => [...prev, { role: "bot", text: botReply }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: "bot", text: "Maaf, sistem satelit saya sedang sibuk (Rate Limit). Mohon coba beberapa saat lagi ya! 📡" }]);
+      setMessages(prev => [...prev, { role: "bot", text: "Maaf, otak satelit saya sedang sibuk (Rate Limit API). Mohon coba beberapa saat lagi ya! 📡" }]);
     } finally {
       setIsTyping(false);
     }
@@ -195,7 +219,7 @@ const FloatingChatbot = () => {
             </div>
             <div>
               <h3 className="font-bold text-sm leading-tight">Samba AI</h3>
-              <p className="text-[10px] text-blue-200 font-bold uppercase tracking-widest opacity-90">Online</p>
+              <p className="text-[10px] text-blue-200 font-bold uppercase tracking-widest opacity-90">Terhubung ke Satelit</p>
             </div>
           </div>
           <button onClick={() => setIsOpen(false)} className="hover:bg-black/20 p-2 rounded-full transition-all">
@@ -326,7 +350,6 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ✅ PERBAIKAN LOGIKA DATA: Lebih pintar mendeteksi Error String atau Angka
   const formatData = (val: any, suffix: string = "") => {
     if (val === undefined || val === null || val === "" || val === "NaN" || val === "N/A") {
       return "N/A";
@@ -334,7 +357,6 @@ export default function Home() {
     if (typeof val !== 'string' && Number.isNaN(Number(val))) {
       return "N/A";
     }
-    // Konversi nilai ke angka dengan aman
     const numVal = Number(val);
     if (numVal === 0 && suffix === "°C") {
       return "Offline"; 
@@ -342,7 +364,6 @@ export default function Home() {
     return `${val}${suffix}`;
   };
 
-  // ✅ Mengecek apakah data yang diterima backend adalah palsu/error rate limit
   const isServerOffline = hasil ? (Number(hasil.detail_cuaca?.suhu_saat_ini) === 0 || hasil.detail_cuaca?.suhu_saat_ini === "N/A" || !hasil.detail_cuaca?.suhu_saat_ini) : false;
 
   const getSaran = (status: string) => {
@@ -366,7 +387,6 @@ export default function Home() {
     };
   };
 
-  // Status Kartu yang Diubah Dinamis
   const cardSaran = isServerOffline 
     ? { teks: "Satelit cuaca sedang memblokir akses dari server (Rate Limit). Mohon tunggu beberapa saat.", icon: <AlertTriangle className="text-slate-500" />, color: "text-slate-600 dark:text-slate-400", bg: "bg-slate-100 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" } 
     : getSaran(hasil?.rekomendasi || "");
@@ -380,7 +400,8 @@ export default function Home() {
           .dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         `}} />
 
-        <FloatingChatbot />
+        {/* Meneruskan Data ke Komponen Chatbot */}
+        <FloatingChatbot selectedPantai={selectedPantai} hasil={hasil} isServerOffline={isServerOffline} />
 
         <nav className="fixed top-0 left-0 right-0 z-[5000] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
           <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
@@ -489,12 +510,9 @@ export default function Home() {
                     </div>
                     <div className="text-center md:text-left space-y-2">
                       <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Analisis Satelit Real-Time</p>
-                      
-                      {/* ✅ Mengganti Teks Utama jadi "Satelit Offline" jika tidak dapat data */}
                       <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${cardSaran.color}`}>
                         {isServerOffline ? "Satelit Offline" : hasil.rekomendasi}
                       </h2>
-                      
                       <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium max-w-xl leading-relaxed">{cardSaran.teks}</p>
                     </div>
                   </div>
