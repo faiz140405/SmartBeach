@@ -17,7 +17,7 @@ const poppins = Poppins({
 });
 
 // ==========================================
-// NATIVE MAP COMPONENT (Bebas Error Next.js SSR)
+// NATIVE MAP COMPONENT 
 // ==========================================
 const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -119,7 +119,7 @@ const FloatingChatbot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Mengambil API Key yang disembunyikan di .env.local
+  // Mengambil API Key dari Environment Variable
   const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
 
   useEffect(() => {
@@ -154,7 +154,7 @@ const FloatingChatbot = () => {
     }
 
     if (!apiKey) {
-      setMessages(prev => [...prev, { role: "bot", text: "Maaf, API Key belum dikonfigurasi. Pastikan file `.env.local` sudah dibuat." }]);
+      setMessages(prev => [...prev, { role: "bot", text: "Maaf, API Key belum dikonfigurasi di server. Pastikan Vercel Environment Variables sudah diisi." }]);
       return;
     }
 
@@ -163,7 +163,7 @@ const FloatingChatbot = () => {
     try {
       const systemPrompt = `Kamu adalah 'Samba AI', asisten pakar pariwisata pantai Lampung. Tugasmu: Menjawab pertanyaan cuaca, rute, keamanan, dan info pantai secara ringkas dan ramah.\n\nPertanyaan: ${userText}`;
       
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -303,10 +303,9 @@ export default function Home() {
             hasilSemua.push({ ...p, statusAI: data.rekomendasi, cuaca: data.detail_cuaca });
           }
         } catch (e) {}
-        await delay(600); // Menjaga jeda agar tidak terlalu membebani server
+        await delay(600); 
       }
 
-      // ✅ LOGIKA DIPERBAIKI: Jika satelit tidak mengirimkan data apa-apa (Rate Limit), batalkan proses.
       if (hasilSemua.length === 0) {
         throw new Error("Server membatasi akses beruntun (Rate Limit API). Mohon coba beberapa jam lagi.");
       }
@@ -327,18 +326,24 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // ✅ PERBAIKAN LOGIKA DATA: Lebih pintar mendeteksi Error String atau Angka
   const formatData = (val: any, suffix: string = "") => {
-    if (val === undefined || val === null || val === "NaN" || val === "N/A") {
+    if (val === undefined || val === null || val === "" || val === "NaN" || val === "N/A") {
       return "N/A";
     }
-    if (typeof val === 'number' && Number.isNaN(val)) {
+    if (typeof val !== 'string' && Number.isNaN(Number(val))) {
       return "N/A";
     }
-    if (val === 0 && suffix === "°C") {
+    // Konversi nilai ke angka dengan aman
+    const numVal = Number(val);
+    if (numVal === 0 && suffix === "°C") {
       return "Offline"; 
     }
     return `${val}${suffix}`;
   };
+
+  // ✅ Mengecek apakah data yang diterima backend adalah palsu/error rate limit
+  const isServerOffline = hasil ? (Number(hasil.detail_cuaca?.suhu_saat_ini) === 0 || hasil.detail_cuaca?.suhu_saat_ini === "N/A" || !hasil.detail_cuaca?.suhu_saat_ini) : false;
 
   const getSaran = (status: string) => {
     if (status === "Aman") return { 
@@ -360,6 +365,11 @@ export default function Home() {
       bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800" 
     };
   };
+
+  // Status Kartu yang Diubah Dinamis
+  const cardSaran = isServerOffline 
+    ? { teks: "Satelit cuaca sedang memblokir akses dari server (Rate Limit). Mohon tunggu beberapa saat.", icon: <AlertTriangle className="text-slate-500" />, color: "text-slate-600 dark:text-slate-400", bg: "bg-slate-100 dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" } 
+    : getSaran(hasil?.rekomendasi || "");
 
   return (
     <div className={isDark ? "dark" : ""}>
@@ -472,15 +482,20 @@ export default function Home() {
               </div>
 
               {hasil && (
-                <div id="result-area" className={`rounded-[2rem] p-6 md:p-10 border shadow-lg animate-in slide-in-from-bottom-8 duration-500 transition-colors ${getSaran(hasil.rekomendasi).bg}`}>
+                <div id="result-area" className={`rounded-[2rem] p-6 md:p-10 border shadow-lg animate-in slide-in-from-bottom-8 duration-500 transition-colors ${cardSaran.bg}`}>
                   <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-8 mb-8 md:mb-10">
                     <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl shadow-sm shrink-0">
-                      {React.cloneElement(getSaran(hasil.rekomendasi).icon, { size: 56 })}
+                      {React.cloneElement(cardSaran.icon as React.ReactElement<any>, { size: 56 })}
                     </div>
                     <div className="text-center md:text-left space-y-2">
                       <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Analisis Satelit Real-Time</p>
-                      <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${getSaran(hasil.rekomendasi).color}`}>{hasil.rekomendasi}</h2>
-                      <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium max-w-xl leading-relaxed">{getSaran(hasil.rekomendasi).teks}</p>
+                      
+                      {/* ✅ Mengganti Teks Utama jadi "Satelit Offline" jika tidak dapat data */}
+                      <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${cardSaran.color}`}>
+                        {isServerOffline ? "Satelit Offline" : hasil.rekomendasi}
+                      </h2>
+                      
+                      <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium max-w-xl leading-relaxed">{cardSaran.teks}</p>
                     </div>
                   </div>
 
@@ -491,7 +506,7 @@ export default function Home() {
                       { icon: Waves, label: "Ombak", val: formatData(hasil.detail_cuaca?.tinggi_gelombang_meter, " m") },
                       { icon: Sunrise, label: "Sunrise", val: formatData(hasil.detail_cuaca?.sunrise) },
                       { icon: Sunset, label: "Sunset", val: formatData(hasil.detail_cuaca?.sunset) },
-                      { icon: Sun, label: "UV", val: `Index ${formatData(hasil.detail_cuaca?.uv_index)}` },
+                      { icon: Sun, label: "UV Index", val: formatData(hasil.detail_cuaca?.uv_index) },
                     ].map((x, i) => (
                       <div key={i} className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center shadow-sm">
                         <x.icon size={24} className="text-slate-500 dark:text-slate-400 mb-3" />
