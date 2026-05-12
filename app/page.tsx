@@ -83,7 +83,8 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
 };
 
 const PANTAI_LAMPUNG = [
-    }
+  }
+  nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null
   },
 
   {
