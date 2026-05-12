@@ -87,8 +87,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Mutun (Pesawaran)",
-    lat: -5.5619,
-    lng: 105.2508,
+    lat: -5.56195,
+    lng: 105.25055,
     info: {
       deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, sangat ramah anak.",
       htm: "Rp 25.000 / Orang",
@@ -101,8 +101,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Sari Ringgung (Pesawaran)",
-    lat: -5.5797,
-    lng: 105.2615,
+    lat: -5.57842,
+    lng: 105.26384,
     info: {
       deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.",
       htm: "Rp 20.000 / Orang",
@@ -115,8 +115,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Klara (Pesawaran)",
-    lat: -5.5962,
-    lng: 105.2231,
+    lat: -5.59714,
+    lng: 105.22304,
     info: {
       deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.",
       htm: "Rp 15.000 / Motor",
@@ -129,8 +129,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Dewi Mandapa (Pesawaran)",
-    lat: -5.6248,
-    lng: 105.2143,
+    lat: -5.60251,
+    lng: 105.24155,
     info: {
       deskripsi: "Wisata mangrove dengan jembatan kayu dan Pulau Cinta.",
       htm: "Rp 15.000 / Orang",
@@ -143,8 +143,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pulau Pahawang (Pesawaran)",
-    lat: -5.6735,
-    lng: 105.2344,
+    lat: -5.67281,
+    lng: 105.22013,
     info: {
       deskripsi: "Surga snorkeling dengan pemandangan taman nemo bawah laut.",
       htm: "Tur mulai Rp 150rb",
@@ -157,8 +157,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Pasir Putih (Lampung Selatan)",
-    lat: -5.5486,
-    lng: 105.4074,
+    lat: -5.53321,
+    lng: 105.34032,
     info: {
       deskripsi: "Pantai legendaris dengan panorama laut lepas dan Pulau Condong.",
       htm: "Rp 15.000 / Orang",
@@ -171,8 +171,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Sebalang (Lampung Selatan)",
-    lat: -5.5208,
-    lng: 105.3905,
+    lat: -5.51888,
+    lng: 105.34144,
     info: {
       deskripsi: "Pantai vibes Jimbaran Bali, dengan bean bag dan live music.",
       htm: "Rp 20.000 / Orang",
@@ -185,8 +185,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Marina (Lampung Selatan)",
-    lat: -5.7428,
-    lng: 105.6188,
+    lat: -5.73562,
+    lng: 105.58985,
     info: {
       deskripsi: "Pantai berkarang dengan hantaman ombak besar khas Samudra Hindia.",
       htm: "Rp 30.000 / Orang",
@@ -199,8 +199,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Minang Rua (Lampung Selatan)",
-    lat: -5.8672,
-    lng: 105.7362,
+    lat: -5.87102,
+    lng: 105.74833,
     info: {
       deskripsi: "Paket komplit: laut, goa karang, air terjun, Green Canyon.",
       htm: "Rp 10.000 / Orang",
@@ -213,8 +213,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Ketang (Lampung Selatan)",
-    lat: -5.7171,
-    lng: 105.5989,
+    lat: -5.71715,
+    lng: 105.59472,
     info: {
       deskripsi: "Pantai karang hitam eksotis sisa letusan Krakatau.",
       htm: "Gratis - 5rb",
@@ -227,8 +227,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Batu Lapis (Lampung Selatan)",
-    lat: -5.9108,
-    lng: 105.7489,
+    lat: -5.89745,
+    lng: 105.75331,
     info: {
       deskripsi: "Karang laut berbentuk berlapis-lapis unik dan fotogenik.",
       htm: "Rp 15.000 / Orang",
@@ -241,8 +241,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Embe (Lamsel)",
-    lat: -5.5310,
-    lng: 105.3731,
+    lat: -5.58164,
+    lng: 105.47462,
     info: {
       deskripsi: "Resort modern dengan garis pantai panjang dan bersih.",
       htm: "Rp 35.000 / Orang",
@@ -255,8 +255,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Duta Wisata (Bandar Lampung)",
-    lat: -5.4484,
-    lng: 105.2426,
+    lat: -5.46732,
+    lng: 105.25361,
     info: {
       deskripsi: "Tepat di pinggir kota, menawarkan pemandangan Teluk Lampung.",
       htm: "Rp 15.000 / Orang",
@@ -269,8 +269,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Tanjung Setia (Pesisir Barat)",
-    lat: -5.2677,
-    lng: 103.9310,
+    lat: -5.30441,
+    lng: 103.99612,
     info: {
       deskripsi: "Surga peselancar dunia dengan ombak tertinggi Mei-Oktober.",
       htm: "Rp 10.000 / Orang",
@@ -283,8 +283,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Labuhan Jukung (Pesisir Barat)",
-    lat: -5.1934,
-    lng: 103.9391,
+    lat: -5.18742,
+    lng: 103.92983,
     info: {
       deskripsi: "Pusat keramaian Krui, lokasi festival selancar internasional.",
       htm: "Rp 5.000 / Motor",
@@ -297,8 +297,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Walur (Pesisir Barat)",
-    lat: -5.2360,
-    lng: 103.9412,
+    lat: -5.21154,
+    lng: 103.92421,
     info: {
       deskripsi: "Pasir putih bersih dengan pemandangan mercusuar.",
       htm: "Gratis",
@@ -311,8 +311,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Mandiri (Pesisir Barat)",
-    lat: -5.2483,
-    lng: 103.9428,
+    lat: -5.26622,
+    lng: 103.97452,
     info: {
       deskripsi: "Pasir hitam eksotis membentang lurus tanpa karang.",
       htm: "Gratis",
@@ -325,8 +325,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Gigi Hiu (Tanggamus)",
-    lat: -5.7558,
-    lng: 105.0892,
+    lat: -5.75161,
+    lng: 105.05142,
     info: {
       deskripsi: "Gugusan batu karang tajam bak gigi hiu yang estetik.",
       htm: "Rp 20.000 / Orang",
@@ -339,8 +339,8 @@ const PANTAI_LAMPUNG = [
 
   {
     nama: "Pantai Teluk Kiluan (Tanggamus)",
-    lat: -5.7812,
-    lng: 105.1010,
+    lat: -5.77942,
+    lng: 105.10521,
     info: {
       deskripsi: "Habitat lumba-lumba liar dan memiliki lagun karang bening.",
       htm: "Rp 15.000",
