@@ -170,7 +170,7 @@ const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline, forecast3Days
 
     let data3Hari = "Belum ada prediksi 3 hari.";
     if (forecast3Days && forecast3Days.length > 0) {
-      data3Hari = forecast3Days.map((d: any) => `- ${d.day}: ${d.status} (Suhu: ${d.temperature}°C, Kelembapan: ${d.humidity}%, Angin: ${d.wind}m/s)`).join("\n");
+      data3Hari = forecast3Days.map((d: any) => `- ${d.day}: ${d.status} (Suhu Maks: ${d.temperature}°C, Kelembapan Maks: ${d.humidity}%, Angin Maks: ${d.wind}m/s)`).join("\n");
     }
 
     try {
