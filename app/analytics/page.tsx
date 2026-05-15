@@ -65,7 +65,7 @@ export default function AnalyticsPage() {
               <div className="bg-blue-600 p-2 rounded-xl text-white shadow-[0_0_15px_rgba(37,99,235,0.5)]">
                 <BrainCircuit size={20} />
               </div>
-              <span className="font-black text-xl tracking-tight text-white uppercase">ML Analytics</span>
+              <span className="font-black text-xl tracking-tight text-white uppercase">Model Analisis</span>
             </div>
           </div>
           
@@ -84,7 +84,7 @@ export default function AnalyticsPage() {
         {/* HEADER SECTION */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-            Intelligence <span className="text-blue-500">Core.</span>
+            dashboard <span className="text-blue-500">Model</span>
           </h1>
           <p className="text-slate-400 max-w-2xl text-sm md:text-base leading-relaxed">
             Dapur pacu di balik keputusan SmartBeach. Kami menggunakan arsitektur ensemble learning untuk memproses data maritim mentah menjadi status keamanan yang presisi.
