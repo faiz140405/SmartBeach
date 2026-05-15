@@ -1,20 +1,14 @@
 "use client";
 
 import React, { useState, useRef, useEffect, Suspense } from "react";
-import { Poppins } from "next/font/google";
 import { 
   MapPin, Wind, ThermometerSun, Sun, Waves, 
   CheckCircle2, AlertTriangle, ShieldAlert, Ticket, Clock, 
   Info, Sunrise, Sunset, Camera, Loader2,
   Sparkles, Trophy, Map as MapIcon, Radar, Navigation, 
   ChevronDown, MessageCircle, X, Send, Bot, User,
-  BotMessageSquare, Moon
+  BotMessageSquare, Moon, BrainCircuit
 } from "lucide-react";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-});
 
 // ==========================================
 // NATIVE MAP COMPONENT 
@@ -109,7 +103,6 @@ const PANTAI_LAMPUNG = [
 // ==========================================
 // CHATBOT COMPONENT TERINTEGRASI DENGAN DASHBOARD
 // ==========================================
-// ✅ Menambahkan prop forecast3Days
 const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline, forecast3Days }: { selectedPantai: string, hasil: any, isServerOffline: boolean, forecast3Days: any[] | null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -175,7 +168,6 @@ const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline, forecast3Days
       `;
     }
 
-    // ✅ MENYISIPKAN DATA 3 HARI KE OTAK AI
     let data3Hari = "Belum ada prediksi 3 hari.";
     if (forecast3Days && forecast3Days.length > 0) {
       data3Hari = forecast3Days.map((d: any) => `- ${d.day}: ${d.status} (Suhu: ${d.temperature}°C, Kelembapan: ${d.humidity}%, Angin: ${d.wind}m/s)`).join("\n");
@@ -285,7 +277,6 @@ export default function Home() {
   const [selectedPantai, setSelectedPantai] = useState(PANTAI_LAMPUNG[0].nama);
   
   const [hasil, setHasil] = useState<any>(null);
-  // ✅ STATE BARU UNTUK PREDIKSI 3 HARI
   const [forecast3Days, setForecast3Days] = useState<any[] | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -309,7 +300,7 @@ export default function Home() {
     setLoading(true); 
     setError(""); 
     setHasil(null);
-    setForecast3Days(null); // Reset hasil 3 hari
+    setForecast3Days(null);
 
     try {
       // 1. Ambil data Real-Time
@@ -424,14 +415,15 @@ export default function Home() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans ${poppins.className}`}>
+      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans`}>
         
         <style dangerouslySetInnerHTML={{__html: `
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+          * { font-family: 'Poppins', sans-serif; }
           .leaflet-top { top: 90px !important; z-index: 1000 !important; }
           .dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         `}} />
 
-        {/* Meneruskan Data ke Komponen Chatbot */}
         <FloatingChatbot selectedPantai={selectedPantai} hasil={hasil} isServerOffline={isServerOffline} forecast3Days={forecast3Days} />
 
         <nav className="fixed top-0 left-0 right-0 z-[5000] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
@@ -446,6 +438,12 @@ export default function Home() {
                 <span className="relative flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
                 <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Satelit Aktif</span>
               </div>
+              
+              {/* ✅ TOMBOL ANALYTICS DENGAN TAG A STANDARD */}
+              <a href="/analytics" className="hidden md:flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 rounded-full transition-colors border border-blue-600/20 font-bold text-xs uppercase tracking-widest">
+                <BrainCircuit size={16} /> ML Analytics
+              </a>
+
               <button onClick={toggleDarkMode} className="p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-sm border border-slate-200 dark:border-slate-700">
                 {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} />}
               </button>
@@ -536,7 +534,6 @@ export default function Home() {
               {hasil && (
                 <div id="result-area" className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-8 duration-500">
                   
-                  {/* Blok Cuaca Real-Time */}
                   <div className={`rounded-[2rem] p-6 md:p-10 border shadow-lg transition-colors ${cardSaran.bg}`}>
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-8 mb-8 md:mb-10">
                       <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl shadow-sm shrink-0">
@@ -569,7 +566,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* ✅ BLOK BARU: PREDIKSI 3 HARI KE DEPAN */}
                   {forecast3Days && forecast3Days.length > 0 && (
                     <div className="animate-in fade-in duration-700">
                       <h3 className="text-lg md:text-xl font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
