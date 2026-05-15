@@ -21,8 +21,6 @@ const poppins = Poppins({
 const accuracyData = [
   { name: 'Random Forest', accuracy: 96.5, fill: '#3b82f6' }, // Blue
   { name: 'Naive Bayes', accuracy: 88.2, fill: '#64748b' },   // Slate
-  { name: 'SVM', accuracy: 91.0, fill: '#64748b' },
-  { name: 'Logistic Regression', accuracy: 89.5, fill: '#64748b' },
 ];
 
 const featureImportanceData = [
@@ -126,7 +124,7 @@ export default function AnalyticsPage() {
               </div>
             </div>
             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">Volume Dataset</p>
-            <h3 className="text-3xl md:text-4xl font-black text-white">12,450<span className="text-lg text-slate-400"> Baris</span></h3>
+            <h3 className="text-3xl md:text-4xl font-black text-white">477<span className="text-lg text-slate-400"> Baris</span></h3>
           </div>
 
           {/* Card 4 */}
@@ -238,7 +236,7 @@ export default function AnalyticsPage() {
             <h3 className="text-2xl font-black text-white mb-4">Mengapa Random Forest?</h3>
             <div className="space-y-4 text-slate-400 text-sm leading-relaxed">
               <p>
-                Setelah melakukan komparasi antara Naive Bayes, SVM, dan Random Forest, kami memutuskan untuk menggunakan <strong>Random Forest Classifier</strong> sebagai *decision engine* utama.
+                Setelah melakukan komparasi antara Naive Bayes, SVM, dan Random Forest, kami memutuskan untuk menggunakan <strong>Random Forest Classifier</strong> sebagai decision engine utama.
               </p>
               <p>
                 Random Forest bekerja dengan cara membangun ratusan "Pohon Keputusan" (Decision Trees) secara acak dan mengambil voting terbanyak. Ini sangat ideal untuk data cuaca laut karena:
