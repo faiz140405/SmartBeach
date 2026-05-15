@@ -109,8 +109,8 @@ const PANTAI_LAMPUNG = [
 // ==========================================
 // CHATBOT COMPONENT TERINTEGRASI DENGAN DASHBOARD
 // ==========================================
-// ✅ Menambahkan props agar Chatbot tau pantai apa yang sedang dilihat dan bagaimana cuacanya
-const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline }: { selectedPantai: string, hasil: any, isServerOffline: boolean }) => {
+// ✅ Menambahkan prop forecast3Days
+const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline, forecast3Days }: { selectedPantai: string, hasil: any, isServerOffline: boolean, forecast3Days: any[] | null }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -160,7 +160,6 @@ const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline }: { selectedP
 
     setIsTyping(true);
 
-    // ✅ INJEKSI DATA REAL-TIME KE OTAK AI
     let dataRealTime = "User belum melakukan pemindaian (Pindai Keamanan Laut).";
     
     if (isServerOffline) {
@@ -176,6 +175,12 @@ const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline }: { selectedP
       `;
     }
 
+    // ✅ MENYISIPKAN DATA 3 HARI KE OTAK AI
+    let data3Hari = "Belum ada prediksi 3 hari.";
+    if (forecast3Days && forecast3Days.length > 0) {
+      data3Hari = forecast3Days.map((d: any) => `- ${d.day}: ${d.status} (Suhu: ${d.temperature}°C, Kelembapan: ${d.humidity}%, Angin: ${d.wind}m/s)`).join("\n");
+    }
+
     try {
       const systemPrompt = `Kamu adalah 'Samba AI', asisten cerdas pariwisata pantai Lampung. 
 Tugasmu: Menjawab pertanyaan user dengan ramah dan ringkas. 
@@ -183,11 +188,14 @@ Tugasmu: Menjawab pertanyaan user dengan ramah dan ringkas.
 PENTING! Ini adalah DATA SATELIT REAL-TIME yang sedang tampil di layar user saat ini:
 ${dataRealTime}
 
-Jika user bertanya tentang cuaca, aman/tidaknya pantai, atau kondisi saat ini, JAWAB BERDASARKAN DATA DI ATAS. Jika statusnya Tidak Aman/Waspada, peringatkan user. Jika data belum dipindai, suruh user menekan tombol "Pindai Keamanan Laut".
+DATA PREDIKSI 3 HARI KE DEPAN UNTUK PANTAI TERSEBUT:
+${data3Hari}
+
+Jika user bertanya tentang cuaca, aman/tidaknya pantai, atau kondisi saat ini maupun beberapa hari ke depan, JAWAB BERDASARKAN DATA DI ATAS. Jika statusnya Tidak Aman/Waspada, peringatkan user dan sarankan hari yang statusnya "Aman" jika ada. Jika data belum dipindai, suruh user menekan tombol "Pindai Keamanan Laut".
 
 Pertanyaan User: ${userText}`;
       
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -275,7 +283,11 @@ export default function Home() {
   const [isDark, setIsDark] = useState(false);
   const [position, setPosition] = useState({ lat: -5.4254, lng: 105.2590 });
   const [selectedPantai, setSelectedPantai] = useState(PANTAI_LAMPUNG[0].nama);
+  
   const [hasil, setHasil] = useState<any>(null);
+  // ✅ STATE BARU UNTUK PREDIKSI 3 HARI
+  const [forecast3Days, setForecast3Days] = useState<any[] | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [rekomendasiTerbaik, setRekomendasiTerbaik] = useState<any[] | null>(null);
@@ -294,18 +306,37 @@ export default function Home() {
   const toggleDarkMode = () => setIsDark(!isDark);
 
   const handlePredict = async () => {
-    setLoading(true); setError(""); setHasil(null);
+    setLoading(true); 
+    setError(""); 
+    setHasil(null);
+    setForecast3Days(null); // Reset hasil 3 hari
+
     try {
-      const res = await fetch("https://faiz140405-backend-smartbeach.hf.space/predict-by-location", {
+      // 1. Ambil data Real-Time
+      const resRealtime = await fetch("https://faiz140405-backend-smartbeach.hf.space/predict-by-location", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lat: position.lat, lon: position.lng }),
       });
-      if (!res.ok) throw new Error("Gagal menghubungi server Satelit.");
-      const data = await res.json();
-      setHasil(data);
+      if (!resRealtime.ok) throw new Error("Gagal menghubungi server Satelit.");
+      const dataRealtime = await resRealtime.json();
+      setHasil(dataRealtime);
+
+      // 2. Ambil data 3 Hari
+      const res3Days = await fetch("https://faiz140405-backend-smartbeach.hf.space/predict-3-days", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat: position.lat, lon: position.lng }),
+      });
+      if (res3Days.ok) {
+        const data3Days = await res3Days.json();
+        setForecast3Days(data3Days);
+      }
+
       setTimeout(() => document.getElementById('result-area')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
-    } catch (err) { setError("Gagal terhubung ke satelit. Pastikan backend aktif."); } 
-    finally { setLoading(false); }
+    } catch (err) { 
+      setError("Gagal terhubung ke satelit. Pastikan backend aktif."); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -346,7 +377,7 @@ export default function Home() {
   };
 
   const pilihDariRekomendasi = (nama: string, lat: number, lng: number) => {
-    setSelectedPantai(nama); setPosition({ lat, lng }); setHasil(null);
+    setSelectedPantai(nama); setPosition({ lat, lng }); setHasil(null); setForecast3Days(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -401,7 +432,7 @@ export default function Home() {
         `}} />
 
         {/* Meneruskan Data ke Komponen Chatbot */}
-        <FloatingChatbot selectedPantai={selectedPantai} hasil={hasil} isServerOffline={isServerOffline} />
+        <FloatingChatbot selectedPantai={selectedPantai} hasil={hasil} isServerOffline={isServerOffline} forecast3Days={forecast3Days} />
 
         <nav className="fixed top-0 left-0 right-0 z-[5000] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
           <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
@@ -446,7 +477,7 @@ export default function Home() {
                       value={selectedPantai}
                       onChange={(e) => {
                         const p = PANTAI_LAMPUNG.find(x => x.nama === e.target.value);
-                        if(p) { setSelectedPantai(p.nama); setPosition({lat: p.lat, lng: p.lng}); setHasil(null); }
+                        if(p) { setSelectedPantai(p.nama); setPosition({lat: p.lat, lng: p.lng}); setHasil(null); setForecast3Days(null); }
                       }}
                       className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl font-semibold outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-200 text-sm md:text-base transition-colors shadow-inner"
                     >
@@ -503,36 +534,68 @@ export default function Home() {
               </div>
 
               {hasil && (
-                <div id="result-area" className={`rounded-[2rem] p-6 md:p-10 border shadow-lg animate-in slide-in-from-bottom-8 duration-500 transition-colors ${cardSaran.bg}`}>
-                  <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-8 mb-8 md:mb-10">
-                    <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl shadow-sm shrink-0">
-                      {React.cloneElement(cardSaran.icon as React.ReactElement<any>, { size: 56 })}
+                <div id="result-area" className="space-y-6 md:space-y-8 animate-in slide-in-from-bottom-8 duration-500">
+                  
+                  {/* Blok Cuaca Real-Time */}
+                  <div className={`rounded-[2rem] p-6 md:p-10 border shadow-lg transition-colors ${cardSaran.bg}`}>
+                    <div className="flex flex-col md:flex-row items-center md:items-start gap-5 md:gap-8 mb-8 md:mb-10">
+                      <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl shadow-sm shrink-0">
+                        {React.cloneElement(cardSaran.icon as React.ReactElement<any>, { size: 56 })}
+                      </div>
+                      <div className="text-center md:text-left space-y-2">
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Analisis Satelit Real-Time</p>
+                        <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${cardSaran.color}`}>
+                          {isServerOffline ? "Satelit Offline" : hasil.rekomendasi}
+                        </h2>
+                        <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium max-w-xl leading-relaxed">{cardSaran.teks}</p>
+                      </div>
                     </div>
-                    <div className="text-center md:text-left space-y-2">
-                      <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Analisis Satelit Real-Time</p>
-                      <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${cardSaran.color}`}>
-                        {isServerOffline ? "Satelit Offline" : hasil.rekomendasi}
-                      </h2>
-                      <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium max-w-xl leading-relaxed">{cardSaran.teks}</p>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+                      {[
+                        { icon: ThermometerSun, label: "Suhu", val: formatData(hasil.detail_cuaca?.suhu_saat_ini, "°C") },
+                        { icon: Wind, label: "Angin", val: formatData(hasil.detail_cuaca?.angin_maks_ms, " m/s") },
+                        { icon: Waves, label: "Ombak", val: formatData(hasil.detail_cuaca?.tinggi_gelombang_meter, " m") },
+                        { icon: Sunrise, label: "Sunrise", val: formatData(hasil.detail_cuaca?.sunrise) },
+                        { icon: Sunset, label: "Sunset", val: formatData(hasil.detail_cuaca?.sunset) },
+                        { icon: Sun, label: "UV Index", val: formatData(hasil.detail_cuaca?.uv_index) },
+                      ].map((x, i) => (
+                        <div key={i} className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center shadow-sm">
+                          <x.icon size={24} className="text-slate-500 dark:text-slate-400 mb-3" />
+                          <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{x.label}</span>
+                          <span className={`text-lg font-black ${x.val === "N/A" || x.val === "Offline" ? "text-slate-400 text-sm md:text-base" : "text-slate-800 dark:text-slate-100 md:text-2xl"}`}>{x.val}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
-                    {[
-                      { icon: ThermometerSun, label: "Suhu", val: formatData(hasil.detail_cuaca?.suhu_saat_ini, "°C") },
-                      { icon: Wind, label: "Angin", val: formatData(hasil.detail_cuaca?.angin_maks_ms, " m/s") },
-                      { icon: Waves, label: "Ombak", val: formatData(hasil.detail_cuaca?.tinggi_gelombang_meter, " m") },
-                      { icon: Sunrise, label: "Sunrise", val: formatData(hasil.detail_cuaca?.sunrise) },
-                      { icon: Sunset, label: "Sunset", val: formatData(hasil.detail_cuaca?.sunset) },
-                      { icon: Sun, label: "UV Index", val: formatData(hasil.detail_cuaca?.uv_index) },
-                    ].map((x, i) => (
-                      <div key={i} className="bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm p-4 md:p-6 rounded-2xl border border-white/50 dark:border-slate-700/50 flex flex-col items-center text-center shadow-sm">
-                        <x.icon size={24} className="text-slate-500 dark:text-slate-400 mb-3" />
-                        <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{x.label}</span>
-                        <span className={`text-lg font-black ${x.val === "N/A" || x.val === "Offline" ? "text-slate-400 text-sm md:text-base" : "text-slate-800 dark:text-slate-100 md:text-2xl"}`}>{x.val}</span>
+                  {/* ✅ BLOK BARU: PREDIKSI 3 HARI KE DEPAN */}
+                  {forecast3Days && forecast3Days.length > 0 && (
+                    <div className="animate-in fade-in duration-700">
+                      <h3 className="text-lg md:text-xl font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
+                        <Clock className="text-blue-500" /> Prediksi 3 Hari ke Depan
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {forecast3Days.map((dayData, idx) => (
+                          <div key={idx} className="bg-white dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                            <p className="text-slate-400 font-bold uppercase text-xs tracking-widest mb-3">{dayData.day}</p>
+                            <div className="flex justify-between items-center mb-5">
+                               <h4 className={`text-2xl font-black tracking-tight ${dayData.status === 'Aman' ? 'text-emerald-500' : dayData.status === 'Waspada' ? 'text-amber-500' : 'text-rose-500'}`}>
+                                 {dayData.status}
+                               </h4>
+                               {dayData.status === 'Aman' ? <CheckCircle2 size={28} className="text-emerald-500" /> : dayData.status === 'Waspada' ? <AlertTriangle size={28} className="text-amber-500" /> : <ShieldAlert size={28} className="text-rose-500" />}
+                            </div>
+                            <div className="space-y-2 text-sm mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
+                              <div className="flex justify-between text-slate-500"><span>Suhu</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.temperature}°C</span></div>
+                              <div className="flex justify-between text-slate-500"><span>Kelembapan</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.humidity}%</span></div>
+                              <div className="flex justify-between text-slate-500"><span>Angin</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.wind} m/s</span></div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  )}
+
                 </div>
               )}
             </div>
