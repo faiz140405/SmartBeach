@@ -170,7 +170,7 @@ const FloatingChatbot = ({ selectedPantai, hasil, isServerOffline, forecast3Days
 
     let data3Hari = "Belum ada prediksi 3 hari.";
     if (forecast3Days && forecast3Days.length > 0) {
-      data3Hari = forecast3Days.map((d: any) => `- ${d.day}: ${d.status} (Suhu Maks: ${d.temperature}°C, Kelembapan Maks: ${d.humidity}%, Angin Maks: ${d.wind}m/s)`).join("\n");
+      data3Hari = forecast3Days.map((d: any) => `- ${d.day}: ${d.status} (Suhu: ${d.temperature}°C, Kelembapan: ${d.humidity}%, Angin: ${d.wind}m/s)`).join("\n");
     }
 
     try {
@@ -582,9 +582,9 @@ export default function Home() {
                                {dayData.status === 'Aman' ? <CheckCircle2 size={28} className="text-emerald-500" /> : dayData.status === 'Waspada' ? <AlertTriangle size={28} className="text-amber-500" /> : <ShieldAlert size={28} className="text-rose-500" />}
                             </div>
                             <div className="space-y-2 text-sm mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
-                              <div className="flex justify-between text-slate-500"><span>Suhu</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.temperature}°C</span></div>
-                              <div className="flex justify-between text-slate-500"><span>Kelembapan</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.humidity}%</span></div>
-                              <div className="flex justify-between text-slate-500"><span>Angin</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.wind} m/s</span></div>
+                              <div className="flex justify-between text-slate-500"><span>Suhu Maks</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.temperature}°C</span></div>
+                              <div className="flex justify-between text-slate-500"><span>Kelembapan Maks</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.humidity}%</span></div>
+                              <div className="flex justify-between text-slate-500"><span>Angin Maks</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.wind} m/s</span></div>
                             </div>
                           </div>
                         ))}
