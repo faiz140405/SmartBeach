@@ -1,14 +1,21 @@
 "use client";
 
 import React, { useState, useRef, useEffect, Suspense } from "react";
+import { Poppins } from "next/font/google";
+import Link from "next/link";
 import { 
   MapPin, Wind, ThermometerSun, Sun, Waves, 
-  CheckCircle2, AlertTriangle, ShieldAlert, Ticket, Clock, 
-  Info, Sunrise, Sunset, Camera, Loader2,
-  Sparkles, Trophy, Map as MapIcon, Radar, Navigation, 
+  CheckCircle2, AlertTriangle, ShieldAlert, Clock, 
+  Info, Sunrise, Sunset, Loader2,
+  Sparkles, Trophy, Radar, Navigation, 
   ChevronDown, MessageCircle, X, Send, Bot, User,
   BotMessageSquare, Moon, BrainCircuit
 } from "lucide-react";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
 
 // ==========================================
 // NATIVE MAP COMPONENT 
@@ -79,17 +86,17 @@ const NativeMapPicker = ({ position, setPosition, daftarPantai }: any) => {
 const PANTAI_LAMPUNG = [
   { nama: "Daftar Pantai...", lat: -5.4254, lng: 105.2590, info: null },
   { nama: "Pantai Mutun (Pesawaran)", lat: -5.56195, lng: 105.25055, info: { deskripsi: "Pantai berpasir putih terdekat dari Bandar Lampung, sangat ramah anak.", htm: "Rp 25.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Mudah, semua kendaraan.", fasilitas: ["Pondokan", "Banana Boat", "Bilas"], waktuTerbaik: "15:00 - 17:00 WIB" } },
-  { nama: "Pantai Sari Ringgung (Pesawaran)", lat: -5.570637, lng: 105.262832, info: { deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.", htm: "Rp 20.000 / Orang", jam: "06:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Perahu", "Masjid Apung", "Kafe"], waktuTerbaik: "08:00 - 11:00 WIB" } },
-  { nama: "Pantai Klara (Pesawaran)", lat: -5.597944, lng: 105.222799, info: { deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.", htm: "Rp 15.000 / Motor", jam: "07:00 - 18:00 WIB", akses: "Pinggir jalan raya.", fasilitas: ["Gazebo", "Kano", "Kamar Mandi"], waktuTerbaik: "10:00 - 14:00 WIB" } },
-  { nama: "Pantai Dewi Mandapa (Pesawaran)", lat: -5.603118, lng: 105.240593, info: { deskripsi: "Wisata mangrove dengan jembatan kayu dan Pulau Cinta.", htm: "Rp 15.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Aspal & tanah.", fasilitas: ["Foto Mangrove", "Pulau Cinta", "Warung"], waktuTerbaik: "16:00 - 18:00 WIB" } },
+  { nama: "Pantai Sari Ringgung (Pesawaran)", lat: -5.57842, lng: 105.26384, info: { deskripsi: "Terkenal dengan fenomena Pasir Timbul dan Masjid Terapung.", htm: "Rp 20.000 / Orang", jam: "06:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Perahu", "Masjid Apung", "Kafe"], waktuTerbaik: "08:00 - 11:00 WIB" } },
+  { nama: "Pantai Klara (Pesawaran)", lat: -5.59714, lng: 105.22304, info: { deskripsi: "Singkatan dari 'Kelapa Rapat', perairan dangkal dan teduh.", htm: "Rp 15.000 / Motor", jam: "07:00 - 18:00 WIB", akses: "Pinggir jalan raya.", fasilitas: ["Gazebo", "Kano", "Kamar Mandi"], waktuTerbaik: "10:00 - 14:00 WIB" } },
+  { nama: "Pantai Dewi Mandapa (Pesawaran)", lat: -5.60251, lng: 105.24155, info: { deskripsi: "Wisata mangrove dengan jembatan kayu dan Pulau Cinta.", htm: "Rp 15.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Aspal & tanah.", fasilitas: ["Foto Mangrove", "Pulau Cinta", "Warung"], waktuTerbaik: "16:00 - 18:00 WIB" } },
   { nama: "Pulau Pahawang (Pesawaran)", lat: -5.67281, lng: 105.22013, info: { deskripsi: "Surga snorkeling dengan pemandangan taman nemo bawah laut.", htm: "Tur mulai Rp 150rb", jam: "07:00 - 17:00 WIB", akses: "Perahu dari Ketapang.", fasilitas: ["Snorkeling", "Homestay", "Makan"], waktuTerbaik: "08:00 - 11:00 WIB" } },
-  { nama: "Pantai Pasir Putih (Lampung Selatan)", lat:  -5.5314, lng: 105.3579, info: { deskripsi: "Pantai legendaris dengan panorama laut lepas dan Pulau Condong.", htm: "Rp 15.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Lintas Sumatera.", fasilitas: ["Souvenir", "Perahu", "Bilas"], waktuTerbaik: "15:30 - 17:30 WIB" } },
+  { nama: "Pantai Pasir Putih (Lampung Selatan)", lat: -5.53321, lng: 105.34032, info: { deskripsi: "Pantai legendaris dengan panorama laut lepas dan Pulau Condong.", htm: "Rp 15.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Lintas Sumatera.", fasilitas: ["Souvenir", "Perahu", "Bilas"], waktuTerbaik: "15:30 - 17:30 WIB" } },
   { nama: "Pantai Sebalang (Lampung Selatan)", lat: -5.51888, lng: 105.34144, info: { deskripsi: "Pantai vibes Jimbaran Bali, dengan bean bag dan live music.", htm: "Rp 20.000 / Orang", jam: "10:00 - 22:00 WIB", akses: "Area PLTU.", fasilitas: ["Kafe", "Live Music", "Sunset"], waktuTerbaik: "16:30 - 19:00 WIB" } },
   { nama: "Pantai Marina (Lampung Selatan)", lat: -5.73562, lng: 105.58985, info: { deskripsi: "Pantai berkarang dengan hantaman ombak besar khas Samudra Hindia.", htm: "Rp 30.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Aspal mulus.", fasilitas: ["Kafe", "Prewedding", "Mushola"], waktuTerbaik: "16:00 - 18:00 WIB" } },
   { nama: "Pantai Minang Rua (Lampung Selatan)", lat: -5.87102, lng: 105.74833, info: { deskripsi: "Paket komplit: laut, goa karang, air terjun, Green Canyon.", htm: "Rp 10.000 / Orang", jam: "07:00 - 18:00 WIB", akses: "Turunan curam.", fasilitas: ["Guide", "Jumping", "Camping"], waktuTerbaik: "08:00 - 12:00 WIB" } },
   { nama: "Pantai Ketang (Lampung Selatan)", lat: -5.71715, lng: 105.59472, info: { deskripsi: "Pantai karang hitam eksotis sisa letusan Krakatau.", htm: "Gratis - 5rb", jam: "24 Jam", akses: "Pinggir jalan.", fasilitas: ["Warung", "Parkir", "Foto"], waktuTerbaik: "16:00 - 17:30 WIB" } },
   { nama: "Pantai Batu Lapis (Lampung Selatan)", lat: -5.89745, lng: 105.75331, info: { deskripsi: "Karang laut berbentuk berlapis-lapis unik dan fotogenik.", htm: "Rp 15.000 / Orang", jam: "07:00 - 17:00 WIB", akses: "Trekking santai.", fasilitas: ["Spot Foto", "Warung", "Parkir"], waktuTerbaik: "15:00 - 17:00 WIB" } },
-  { nama: "Pantai Embeach (Lamsel)", lat: -5.6683, lng: 105.5391, info: { deskripsi: "Resort modern dengan garis pantai panjang dan bersih.", htm: "Rp 35.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Sangat mudah.", fasilitas: ["Resort", "Pool", "Resto"], waktuTerbaik: "Pagi/Sore" } },
+  { nama: "Pantai Embe (Lamsel)", lat: -5.58164, lng: 105.47462, info: { deskripsi: "Resort modern dengan garis pantai panjang dan bersih.", htm: "Rp 35.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Sangat mudah.", fasilitas: ["Resort", "Pool", "Resto"], waktuTerbaik: "Pagi/Sore" } },
   { nama: "Pantai Duta Wisata (Bandar Lampung)", lat: -5.46732, lng: 105.25361, info: { deskripsi: "Tepat di pinggir kota, menawarkan pemandangan Teluk Lampung.", htm: "Rp 15.000 / Orang", jam: "08:00 - 18:00 WIB", akses: "Bisa Ojek Online.", fasilitas: ["Sewa Ban", "Pondok", "Warung"], waktuTerbaik: "16:00 - 18:00 WIB" } },
   { nama: "Pantai Tanjung Setia (Pesisir Barat)", lat: -5.30441, lng: 103.99612, info: { deskripsi: "Surga peselancar dunia dengan ombak tertinggi Mei-Oktober.", htm: "Rp 10.000 / Orang", jam: "24 Jam", akses: "Jalan Lintas Barat.", fasilitas: ["Resort", "Surf Rental", "Kafe"], waktuTerbaik: "Pagi Hari" } },
   { nama: "Pantai Labuhan Jukung (Pesisir Barat)", lat: -5.18742, lng: 103.92983, info: { deskripsi: "Pusat keramaian Krui, lokasi festival selancar internasional.", htm: "Rp 5.000 / Motor", jam: "24 Jam", akses: "Pusat Kota Krui.", fasilitas: ["Alun-alun", "Taman", "Seafood"], waktuTerbaik: "16:30 - 18:30 WIB" } },
@@ -187,7 +194,7 @@ Jika user bertanya tentang cuaca, aman/tidaknya pantai, atau kondisi saat ini ma
 
 Pertanyaan User: ${userText}`;
       
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview?key=${apiKey}`, {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -202,7 +209,7 @@ Pertanyaan User: ${userText}`;
       const botReply = data.candidates[0].content.parts[0].text;
       setMessages(prev => [...prev, { role: "bot", text: botReply }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: "bot", text: "Maaf, otak satelit saya sedang sibuk (Rate Limit API). Mohon coba beberapa saat lagi ya! 📡" }]);
+      setMessages(prev => [...prev, { role: "bot", text: "Maaf, otak server saya sedang sibuk (Rate Limit API). Mohon coba beberapa saat lagi ya! 📡" }]);
     } finally {
       setIsTyping(false);
     }
@@ -219,7 +226,7 @@ Pertanyaan User: ${userText}`;
             </div>
             <div>
               <h3 className="font-bold text-sm leading-tight">Samba AI</h3>
-              <p className="text-[10px] text-blue-200 font-bold uppercase tracking-widest opacity-90">Terhubung ke Satelit</p>
+              <p className="text-[10px] text-blue-200 font-bold uppercase tracking-widest opacity-90">Terhubung ke Server</p>
             </div>
           </div>
           <button onClick={() => setIsOpen(false)} className="hover:bg-black/20 p-2 rounded-full transition-all">
@@ -308,7 +315,7 @@ export default function Home() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lat: position.lat, lon: position.lng }),
       });
-      if (!resRealtime.ok) throw new Error("Gagal menghubungi server Satelit.");
+      if (!resRealtime.ok) throw new Error("Gagal menghubungi server Server.");
       const dataRealtime = await resRealtime.json();
       setHasil(dataRealtime);
 
@@ -324,7 +331,7 @@ export default function Home() {
 
       setTimeout(() => document.getElementById('result-area')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
     } catch (err) { 
-      setError("Gagal terhubung ke satelit. Pastikan backend aktif."); 
+      setError("Gagal terhubung ke server. Pastikan backend aktif."); 
     } finally { 
       setLoading(false); 
     }
@@ -358,7 +365,14 @@ export default function Home() {
 
       let kandidat = hasilSemua.filter(p => p.statusAI === "Aman");
       if (kandidat.length === 0) kandidat = hasilSemua.filter(p => p.statusAI === "Waspada");
-      kandidat.sort((a, b) => a.cuaca.angin_ms - b.cuaca.angin_ms);
+      
+      // ✅ LOGIKA SORTING DIPERBAIKI
+      kandidat.sort((a, b) => {
+        const anginA = Number(a.cuaca.angin_maks_ms) || 0;
+        const anginB = Number(b.cuaca.angin_maks_ms) || 0;
+        return anginA - anginB;
+      });
+      
       setRekomendasiTerbaik(kandidat);
 
     } catch (err: any) { 
@@ -415,11 +429,9 @@ export default function Home() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans`}>
+      <div className={`min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-100 transition-colors duration-300 pb-24 font-sans ${poppins.className}`}>
         
         <style dangerouslySetInnerHTML={{__html: `
-          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-          * { font-family: 'Poppins', sans-serif; }
           .leaflet-top { top: 90px !important; z-index: 1000 !important; }
           .dark .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
         `}} />
@@ -436,13 +448,12 @@ export default function Home() {
             <div className="flex items-center gap-3 md:gap-5">
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700">
                 <span className="relative flex h-2.5 w-2.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
-                <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Satelit Aktif</span>
+                <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Server Aktif</span>
               </div>
               
-              {/* ✅ TOMBOL ANALYTICS DENGAN TAG A STANDARD */}
-              <a href="/analytics" className="hidden md:flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 rounded-full transition-colors border border-blue-600/20 font-bold text-xs uppercase tracking-widest">
+              <Link href="/analytics" className="hidden md:flex items-center gap-2 px-4 py-2 bg-blue-600/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 rounded-full transition-colors border border-blue-600/20 font-bold text-xs uppercase tracking-widest">
                 <BrainCircuit size={16} /> ML Analytics
-              </a>
+              </Link>
 
               <button onClick={toggleDarkMode} className="p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors shadow-sm border border-slate-200 dark:border-slate-700">
                 {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} />}
@@ -494,7 +505,7 @@ export default function Home() {
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 disabled:opacity-70 flex items-center justify-center gap-3 text-sm md:text-base active:scale-95"
                   >
                     {loading ? <Loader2 className="animate-spin" size={20} /> : <Radar size={20} />}
-                    {loading ? "Menghubungi Satelit..." : "Pindai Keamanan Laut"}
+                    {loading ? "Menghubungi Server..." : "Pindai Keamanan Laut"}
                   </button>
                 </div>
               </div>
@@ -540,9 +551,9 @@ export default function Home() {
                         {React.cloneElement(cardSaran.icon as React.ReactElement<any>, { size: 56 })}
                       </div>
                       <div className="text-center md:text-left space-y-2">
-                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Analisis Satelit Real-Time</p>
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Analisis Server Real-Time</p>
                         <h2 className={`text-4xl md:text-6xl font-black tracking-tighter ${cardSaran.color}`}>
-                          {isServerOffline ? "Satelit Offline" : hasil.rekomendasi}
+                          {isServerOffline ? "Server Offline" : hasil.rekomendasi}
                         </h2>
                         <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 font-medium max-w-xl leading-relaxed">{cardSaran.teks}</p>
                       </div>
@@ -583,7 +594,7 @@ export default function Home() {
                             </div>
                             <div className="space-y-2 text-sm mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
                               <div className="flex justify-between text-slate-500"><span>Suhu Maks</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.temperature}°C</span></div>
-                              <div className="flex justify-between text-slate-500"><span>Kelembapan Maks</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.humidity}%</span></div>
+                              <div className="flex justify-between text-slate-500"><span>Kelembapan (Siang)</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.humidity}%</span></div>
                               <div className="flex justify-between text-slate-500"><span>Angin Maks</span><span className="text-slate-800 dark:text-slate-200 font-bold">{dayData.wind} m/s</span></div>
                             </div>
                           </div>
@@ -605,7 +616,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 rounded-full border border-blue-500/20 text-blue-300 text-[10px] md:text-xs font-bold uppercase tracking-widest">
                   <Sparkles size={14} /> Intelligence Engine
                 </div>
-                <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">AI Satelit <br/><span className="text-blue-500">Deep Scan.</span></h2>
+                <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">AI <br/><span className="text-blue-500">Smart-Beach.</span></h2>
                 <p className="text-sm md:text-base text-slate-400 font-medium leading-relaxed max-w-sm mx-auto lg:mx-0">
                   Sistem kami memindai titik pantai di Provinsi Lampung secara serentak untuk mencarikan Anda lokasi wisata paling aman hari ini.
                 </p>
@@ -627,9 +638,10 @@ export default function Home() {
                             <div key={i} onClick={() => pilihDariRekomendasi(p.nama, p.lat, p.lng)} className="bg-slate-800 hover:bg-slate-700 p-5 md:p-6 rounded-2xl cursor-pointer transition-all border border-slate-700 hover:border-blue-500 relative group shadow-sm">
                               <h3 className="font-bold text-sm md:text-base text-white mb-3 md:mb-4 pr-10 group-hover:text-blue-400 transition-colors">{p.nama}</h3>
                               <div className={`absolute top-5 right-5 w-3 h-3 rounded-full ${p.statusAI === 'Aman' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]' : 'bg-amber-500'}`}></div>
+                              
                               <div className="flex gap-5 md:gap-6 text-[10px] md:text-xs text-slate-400 font-medium">
-                                <span className="flex items-center gap-1.5"><Wind size={14}/> {formatData(p.cuaca.angin_ms, "m/s")}</span>
-                                <span className="flex items-center gap-1.5"><Waves size={14}/> {formatData(p.cuaca.tinggi_gelombang_meter, "m")}</span>
+                                <span className="flex items-center gap-1.5"><Wind size={14}/> {formatData(p.cuaca.angin_maks_ms, " m/s")}</span>
+                                <span className="flex items-center gap-1.5"><Waves size={14}/> {formatData(p.cuaca.tinggi_gelombang_meter, " m")}</span>
                               </div>
                             </div>
                           ))}
@@ -650,7 +662,7 @@ export default function Home() {
         </div>
 
         <footer className="text-center pt-24 pb-8 opacity-40">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Lampung Smart Beach Intelligence</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">Smart Beach</p>
         </footer>
       </div>
     </div>
